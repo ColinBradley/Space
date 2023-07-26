@@ -1,0 +1,47 @@
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using Space.Models;
+@using SpaceTraders.Api;
+@using SpaceTraders.Model;
+
+@inject IConfiguration Configuration;
+@inject SpaceApplication Application;
+@inject ProtectedLocalStorage LocalStorage;
+
+<div style="display:flex; gap:1em;">
+    <label>
+        Account
+        <select @bind="SelectedAccountKey">
+            @foreach (var account in mAccounts)
+            {
+                <option value=@account.Key>@account.Name</option>
+            }
+        </select>
+    </label>
+<a href="/register">New</a>
+</div>
+
+@code {
+    private PlayerAccount[] mAccounts = Array.Empty<PlayerAccount>();
+
+    private string SelectedAccountKey
+    {
+        get => SpaceTraders.Client.GlobalConfiguration.Instance.AccessToken;
+        set
+        {
+            _ = this.Application.SetPlayerAccessToken(value);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var baseAccounts = this.Configuration.GetSection("Accounts").Get<PlayerAccount[]>();
+        if (baseAccounts is not null && baseAccounts.Length > 0)
+        {
+            mAccounts = baseAccounts;
+
+            this.SelectedAccountKey = baseAccounts.First().Key;
+        }
+    }
+}

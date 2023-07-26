@@ -1,0 +1,19 @@
+{
+  "name": "space",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babylonjs/core": "^6.13.0",
+    "@babylonjs/materials": "^6.13.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.18.17",
+    "typescript": "^5.1.6"
+  }
+}

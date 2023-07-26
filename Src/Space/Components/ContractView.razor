@@ -1,0 +1,58 @@
+﻿@using Space.Models;
+@using SpaceTraders.Api;
+@using SpaceTraders.Model;
+
+@inject SpaceApplication Application;
+
+@if (this.Contract == null)
+{
+    return;
+}
+
+<div class="panel">
+    <div>@this.Contract.Value.Type</div>
+    <div>Accepted: @this.Contract.Value.Accepted</div>
+    @if (this.Contract.Value.Accepted)
+    {
+        <div>Deadline: @this.Contract.Value.Terms.Deadline</div>
+    }
+    else
+    {
+        <div>Deadline: @this.Contract.Value.DeadlineToAccept</div>
+        <button @onclick="AcceptButton_Click">Accept</button>
+    }
+    <div>Payment: @this.Contract.Value.Terms.Payment.OnAccepted + @this.Contract.Value.Terms.Payment.OnFulfilled</div>
+    <div class="panel">
+        @foreach (var delivery in this.Contract.Value.Terms.Deliver)
+        {
+            <div>Deliver: @delivery.UnitsFulfilled/@delivery.UnitsRequired @delivery.TradeSymbol to @delivery.DestinationSymbol</div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Observable<Contract>? Contract { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+    private async Task AcceptButton_Click()
+    {
+        if (this.Contract == null)
+        {
+            return;
+        }
+
+        var result = await new ContractsApi().AcceptContractAsync(this.Contract.Value.Id);
+        if (result is null)
+        {
+            return;
+        }
+
+        this.Contract.Value = result.Data.Contract;
+        this.Application.Agent.Value = result.Data.Agent;
+    }
+}

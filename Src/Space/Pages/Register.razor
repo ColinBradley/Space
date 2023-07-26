@@ -1,0 +1,135 @@
+﻿@page "/register"
+
+@using Space.Meta;
+@using SpaceTraders.Api;
+@using SpaceTraders.Model;
+
+<PageTitle>Space - Register</PageTitle>
+
+<div style="display:flex; flex-direction:column;">
+
+    <div style="padding: 1em; display:flex; flex-direction:column; gap: 1em;">
+        <h1>RegisterAccount</h1>
+
+        <form onsubmit="return false">
+            <label>
+                Name
+                <input type="text" @bind="NewAccountName" autofocus />
+            </label>
+            <label>
+                Faction
+                <select @bind="NewFaction">
+                    @foreach (var faction in Enum.GetValues<FactionSymbols>())
+                    {
+                        <option selected=@(faction == this.NewFaction) value=@faction>@faction.ToString()</option>
+                    }
+                </select>
+            </label>
+            <button @onclick=CreateAccountButton_Click type="submit">Create</button>
+        </form>
+    </div>
+
+    @if (!string.IsNullOrEmpty(this.NewAccountKey))
+    {
+        <div style="margin: 1em;">
+            <h2>Account Key</h2>
+            <div style="padding: .5em; word-break:break-all; border: 1px solid #7777">@this.NewAccountKey</div>
+        </div>
+    }
+
+    @{
+        var selectedFaction = mFactions.FirstOrDefault(f => f.Symbol == this.NewFaction);
+        var factionColor = FactionMeta.GetHexColor(selectedFaction?.Symbol);
+
+        <div style="display: flex; flex-direction: column; gap: 1em; padding: 1em; background-color: @(factionColor);">
+            <h2>Faction Information</h2>
+            @if (selectedFaction is null)
+            {
+                <div>Unknown...</div>
+            }
+            else
+            {
+                <div>
+                    <img style="float: left; margin: 0 1em 1em 0; max-width: 8em; border: thick solid @(factionColor)"
+                        src="@FactionMeta.GetLogoPath(selectedFaction.Symbol)" />
+                    @selectedFaction.Description
+                </div>
+
+                <div style="display: flex; gap: 1em; margin: 1em; flex-wrap: wrap; justify-content: center;">
+                    @foreach (var sceneImage in FactionMeta.GetSceneImagePaths(selectedFaction.Symbol))
+                    {
+                        <img style="max-width: 15em;" src="@sceneImage" />
+                    }
+                </div>
+
+                <h3>Traits</h3>
+                <dl>
+                    @foreach (var trait in selectedFaction.Traits)
+                    {
+                        <dt>@trait.Name</dt>
+                        <dd>@trait.Description</dd>
+                    }
+                </dl>
+            }
+        </div>
+    }
+
+    <a style="padding: 1em;" href="/">Back</a>
+</div>
+
+<style>
+    form {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 1em;
+        align-items: end;
+    }
+
+    label {
+        display: flex;
+        flex-direction: column;
+    }
+
+    dt {
+        font-weight: bold;
+    }
+</style>
+
+@code {
+    private Faction[] mFactions = Array.Empty<Faction>();
+
+    private string NewAccountName { get; set; } = string.Empty;
+    private FactionSymbols NewFaction { get; set; } = FactionSymbols.COSMIC;
+    private string NewAccountKey { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var factionsApi = new FactionsApi();
+        var factions = await factionsApi.GetFactionsAsync();
+        if (factions is not null)
+        {
+            mFactions = factions.Data.ToArray();
+        }
+    }
+
+    private void StartNewAccountButton_Click()
+    {
+        this.NewAccountName = string.Empty;
+    }
+
+    private async Task CreateAccountButton_Click()
+    {
+        var api = new DefaultApi();
+        var registerResult = await api.RegisterAsync(new RegisterRequest(this.NewFaction, this.NewAccountName));
+
+        if (registerResult is null)
+        {
+            return;
+        }
+
+        this.NewAccountKey = registerResult.Data.Token;
+    }
+}
