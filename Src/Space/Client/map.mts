@@ -28,10 +28,9 @@ export function initialize(canvas: HTMLCanvasElement) {
     scene = new Scene(engine);
     scene.clearColor = new Color4(0, 0, 0, 1);
 
-    const camera = new ArcRotateCamera('camera1', 0, 1, 10, Vector3.Zero(), scene);
-    camera.radius = 30;
+    const camera = new ArcRotateCamera('camera1', 0, .8, 100, Vector3.Zero(), scene);
     camera.lowerRadiusLimit = 10;
-    camera.panningInertia = .95;
+    camera.panningInertia = .96;
     camera.panningSensibility = 100;
     camera.mapPanning = true;
     camera.attachControl(true, false, 0);
@@ -65,9 +64,6 @@ export function initialize(canvas: HTMLCanvasElement) {
 }
 
 export function setWaypoints(waypoints: Waypoint[] = []) {
-    const waypointMaterial = new StandardMaterial("thing", scene);
-    waypointMaterial.diffuseColor = new Color3(.1, .3, .8);
-
     const orbitalLocations = new Map<string, number>();
 
     for (const waypoint of waypoints) {
@@ -79,8 +75,15 @@ export function setWaypoints(waypoints: Waypoint[] = []) {
     }
 
     for (const waypoint of waypoints) {
-        const waypointMesh = CreateSphere('sphere1', { segments: 16, diameter: 2 }, scene);
-        waypointMesh.position = new Vector3(waypoint.x * 3, 2 + (orbitalLocations.get(waypoint.symbol) ?? 0), waypoint.y * 3);
+        const waypointMaterial = new StandardMaterial("waypointMaterial", scene);
+        waypointMaterial.diffuseColor = getWaypointColor(waypoint.type);
+
+        const waypointMesh = CreateSphere('sphere1', { segments: 16, diameter: getWaypointSize(waypoint.type) }, scene);
+        waypointMesh.position = new Vector3(
+            waypoint.x * 3,
+            2 + (orbitalLocations.get(waypoint.symbol) ?? 0),
+            waypoint.y * 3
+        );
         waypointMesh.material = waypointMaterial;
 
         const labelPlane = CreatePlane("plane", { size: 50 });
@@ -94,5 +97,51 @@ export function setWaypoints(waypoints: Waypoint[] = []) {
         labelTextBlock.color = "white";
         labelTextBlock.fontSize = "50"
         labelTexture.addControl(labelTextBlock);
+    }
+}
+
+function getWaypointSize(type: WaypointType) {
+    switch (type) {
+        case WaypointType.Planet:
+            return 3;
+        case WaypointType.GasGiant:
+            return 4;
+        case WaypointType.Moon:
+            return 2;
+        case WaypointType.OrbitalStation:
+            return 1;
+        case WaypointType.JumpGate:
+            return 1;
+        case WaypointType.AsteroidField:
+            return 2;
+        case WaypointType.Nebula:
+            return 3;
+        case WaypointType.DebrisField:
+            return 1;
+        case WaypointType.GravityWell:
+            return 5;
+    };
+}
+
+function getWaypointColor(type: WaypointType) {
+    switch (type) {
+        case WaypointType.Planet:
+            return new Color3(0, 1, 0.5); // greeny blue
+        case WaypointType.GasGiant:
+            return new Color3(0.6, 0.2, 0.4); // pinky
+        case WaypointType.Moon:
+            return new Color3(1, 1, 1); // white
+        case WaypointType.OrbitalStation:
+            return new Color3(0.2, 0.2, 0.2); // dark gray
+        case WaypointType.JumpGate:
+            return new Color3(1, 0.5, 0); // orange
+        case WaypointType.AsteroidField:
+            return new Color3(0.4, 0.4, 0.4); // dark gray
+        case WaypointType.Nebula:
+            return new Color3(0.7, 0.7, 1); // light blue
+        case WaypointType.DebrisField:
+            return new Color3(1, 1, 0); // yellow
+        case WaypointType.GravityWell:
+            return new Color3(1, 0, 1); // magenta
     }
 }
