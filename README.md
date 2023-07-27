@@ -1,5 +1,5 @@
 # Space
-A thing based on (SpaceTraders)[https://spacetraders.io/].
+A thing based on [SpaceTraders](https://spacetraders.io/).
 
 ![Tim Curry Saying Space](space-tim-curry.gif "SPACE!")
 
