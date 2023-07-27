@@ -1,9 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 @using Space.Models;
 @using SpaceTraders.Api;
+@using SpaceTraders.Client;
 @using SpaceTraders.Model;
 
 @inject IConfiguration Configuration;
+@inject Configuration SpaceConfiration;
 @inject SpaceApplication Application;
 @inject ProtectedLocalStorage LocalStorage;
 
@@ -13,7 +15,7 @@
         <select @bind="SelectedAccountKey">
             @foreach (var account in mAccounts)
             {
-                <option value=@account.Key>@account.Name</option>
+                <option selected=@(this.SelectedAccountKey == account.Key) value=@account.Key>@account.Name</option>
             }
         </select>
     </label>
@@ -25,23 +27,30 @@
 
     private string SelectedAccountKey
     {
-        get => SpaceTraders.Client.GlobalConfiguration.Instance.AccessToken;
+        get => SpaceConfiration.AccessToken;
         set
         {
             _ = this.Application.SetPlayerAccessToken(value);
         }
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnInitializedAsync();
+        await base.OnAfterRenderAsync(firstRender);
 
-        var baseAccounts = this.Configuration.GetSection("Accounts").Get<PlayerAccount[]>();
-        if (baseAccounts is not null && baseAccounts.Length > 0)
+        if (!firstRender)
         {
-            mAccounts = baseAccounts;
+            return;
+        }
 
-            this.SelectedAccountKey = baseAccounts.First().Key;
+        var baseAccounts = await this.LocalStorage.GetAsync<PlayerAccount[]>("Accounts");
+        if (baseAccounts.Success && baseAccounts.Value is not null && baseAccounts.Value.Length > 0)
+        {
+            mAccounts = baseAccounts.Value;
+
+            this.SelectedAccountKey = mAccounts.First().Key;
+
+            this.StateHasChanged();
         }
     }
 }

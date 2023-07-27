@@ -1,8 +1,13 @@
 ﻿@page "/register"
 
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 @using Space.Meta;
+@using Space.Models;
 @using SpaceTraders.Api;
+@using SpaceTraders.Client;
 @using SpaceTraders.Model;
+
+@inject ProtectedLocalStorage LocalStorage;
 
 <PageTitle>Space - Register</PageTitle>
 
@@ -29,11 +34,17 @@
         </form>
     </div>
 
+    @if(!string.IsNullOrEmpty(mLastError))
+    {
+        <div style="margin: 1em; color: red;">@mLastError</div>
+    }
+
     @if (!string.IsNullOrEmpty(this.NewAccountKey))
     {
         <div style="margin: 1em;">
             <h2>Account Key</h2>
             <div style="padding: .5em; word-break:break-all; border: 1px solid #7777">@this.NewAccountKey</div>
+            <div>The key account has been stored in your browser's storage. Head <a href="/">back</a> to get going.</div>
         </div>
     }
 
@@ -98,6 +109,7 @@
 
 @code {
     private Faction[] mFactions = Array.Empty<Faction>();
+    private string? mLastError = null;
 
     private string NewAccountName { get; set; } = string.Empty;
     private FactionSymbols NewFaction { get; set; } = FactionSymbols.COSMIC;
@@ -122,8 +134,19 @@
 
     private async Task CreateAccountButton_Click()
     {
+        mLastError = null;
         var api = new DefaultApi();
-        var registerResult = await api.RegisterAsync(new RegisterRequest(this.NewFaction, this.NewAccountName));
+
+        Register201Response registerResult;
+        try
+        {
+            registerResult = await api.RegisterAsync(new RegisterRequest(this.NewFaction, this.NewAccountName));
+        } 
+        catch (ApiException ex)
+        {
+            mLastError = ex.Message;
+            return;
+        }
 
         if (registerResult is null)
         {
@@ -131,5 +154,13 @@
         }
 
         this.NewAccountKey = registerResult.Data.Token;
+
+        var accountsResult = await this.LocalStorage.GetAsync<PlayerAccount[]>("Accounts");
+
+        var accounts = accountsResult.Success && accountsResult.Value is not null ? new List<PlayerAccount>(accountsResult.Value) : new ();
+
+        accounts.Add(new PlayerAccount() { Name = this.NewAccountName, Key = this.NewAccountKey });
+
+        await this.LocalStorage.SetAsync("Accounts", accounts);
     }
 }
