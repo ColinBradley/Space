@@ -1,4 +1,6 @@
 # Space
+A thing based on (SpaceTraders)[https://spacetraders.io/].
+
 ![Tim Curry Saying Space](space-tim-curry.gif "SPACE!")
 
 ## Current state
