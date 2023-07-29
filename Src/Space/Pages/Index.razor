@@ -1,100 +1,72 @@
 ﻿@page "/";
 
+@using Microsoft.AspNetCore.WebUtilities;
+@using Space.Components
+@using Space.Helpers;
 @using Space.Models;
 @using SpaceTraders.Model;
 
 @implements IDisposable;
 
 @inject SpaceApplication Application;
-@inject IJSRuntime JS;
+@inject NavigationManager NavigationManager;
 
 <PageTitle>Space</PageTitle>
 
-<div style="display:grid;">
-    <h1>SPAAACE</h1>
-    <Space.Components.AccountComponent/>
-
-    <div class="panel">
-        <div>Name: @this.Application.Agent.Value?.Symbol</div>
-        <div>Credits: @this.Application.Agent.Value?.Credits</div>
-        <div>Home: @this.Application.Agent.Value?.Headquarters</div>
+<div style="display:flex; flex-direction:column; gap:1em; padding:1em;">
+    <div style="display:flex; justify-content:space-between;">
+        <h1>SPACE</h1>
+        <AccountComponent />
     </div>
 
     <div class="panel">
         <h2>Ships</h2>
-        @foreach (var ship in this.Application.AgentShips.Values.Select(o => o.Value))
-        {
-            <div class="panel">
-                <div>@ship.Registration.Name - @ship.Registration.Role</div>
-                <div>Frame: @ship.Frame.Name - @ship.Frame.Description</div>
-                <div>Cargo: @ship.Cargo.Units / @ship.Cargo.Capacity</div>
-                <div>Crew: @ship.Crew.Current / @ship.Crew.Capacity</div>
-                <div>Location: @ship.Nav.WaypointSymbol</div>
-            </div>
-        }
+        <div style="display:flex; flex-wrap:wrap; gap:1em;">
+            @foreach (var ship in this.Application.Ships.Values)
+            {
+                <ShipView Ship=@ship />
+            }
+        </div>
     </div>
     <div class="panel">
         <h2>Contracts</h2>
-        @foreach (var contract in this.Application.Contracts.Values.Select(o => o.Value))
+        @foreach (var contract in this.Application.Contracts.Values)
         {
-            <div class="panel">
-                <div>@contract.Type</div>
-                <div>Deadline: @(contract.Accepted ? contract.DeadlineToAccept : contract.Terms.Deadline)</div>
-                <div>Accepted: @contract.Accepted</div>
-                <div>Payment: @contract.Terms.Payment.OnAccepted + @contract.Terms.Payment.OnFulfilled</div>
-                <div class="panel">
-                    @foreach(var delivery in contract.Terms.Deliver)
-                    {
-                        <div>Deliver: @delivery.UnitsFulfilled/@delivery.UnitsRequired @delivery.TradeSymbol to @delivery.DestinationSymbol</div>
-                    }
-                </div>
-            </div>
+            <ContractView Contract=@contract />
         }
     </div>
 
-    <canvas @ref="mRenderCanvas" width="500" height="600" style="width: 100%; height: 600px;" />
+    <div class="panel" style="display:flex; flex-direction:column; gap:1em;">
+        <h2>
+            <label>
+                System
+                <input list="systems" @bind-value=this.SystemTextBoxValue @oninput=this.SystemTextbox_Input style="font-size:.7em;">
+                <datalist id="systems">
+                    @foreach (var system in this.Application.KnownSystems)
+                    {
+                        <option value="@system.SpaceSystem.Value.Symbol" />
+                    })
+                </datalist>
+            </label>
+        </h2>
+
+        <SystemView System="@mSelectedSystem" />
+    </div>
 </div>
 
-<style>
-    .panel {
-        padding: 1em;
-        border: thin solid #7777;
-    }
-</style>
-
 @code {
-    private ElementReference mRenderCanvas;
-    private bool mIs3DReady = false;
-    private IJSObjectReference? mMapModule;
+    private SystemModel? mSelectedSystem = null;
+
+    private string SystemTextBoxValue { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
         this.Application.Changed += this.Application_Changed;
-        this.Application.VisibleSystemWaypoints.Changed += this.VisibleSystemWaypoints_Changed;
-    }
+        this.NavigationManager.LocationChanged += this.NavigationManager_LocationChanged;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if (!firstRender)
-        {
-            return;
-        }
-
-        mMapModule =
-            await JS.InvokeAsync<IJSObjectReference>(
-                "import", 
-                "./js/map.js");
-
-        await mMapModule.InvokeVoidAsync("initialize", mRenderCanvas);
-
-        mIs3DReady = true;
-
-        var waypoints = this.Application.VisibleSystemWaypoints.Values.Select(o => o.Value).ToArray();
-        await mMapModule!.InvokeVoidAsync("setWaypoints", new[] { waypoints });
+        await this.TrySetSystemFromUrl();
     }
 
     private void Application_Changed()
@@ -102,18 +74,30 @@
         _ = this.InvokeAsync(this.StateHasChanged);
     }
 
-    private void VisibleSystemWaypoints_Changed(ObservableCollection<Waypoint> _observable)
+    private async Task SystemTextbox_Input(ChangeEventArgs e)
     {
-        if (!mIs3DReady)
+        mSelectedSystem = await this.Application.TryGetSystem(e.Value as string ?? string.Empty);
+    }
+
+    private void NavigationManager_LocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        _ = this.TrySetSystemFromUrl();
+
+        this.StateHasChanged();
+    }
+
+    private async Task TrySetSystemFromUrl()
+    {
+        if (!this.NavigationManager.TryGetQueryString(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, out var selectedWaypoint))
         {
             return;
         }
 
-        this.InvokeAsync(async () =>
-        {
-            var waypoints = this.Application.VisibleSystemWaypoints.Values.Select(o => o.Value).ToArray();
-            await mMapModule!.InvokeVoidAsync("setWaypoints", new[] { waypoints });
-        });
+        this.SystemTextBoxValue = new WaypointLocation(selectedWaypoint).SectorAndSystem;
+
+        mSelectedSystem = await this.Application.TryGetSystem(this.SystemTextBoxValue);
+
+        this.StateHasChanged();
     }
 
     public void Dispose()

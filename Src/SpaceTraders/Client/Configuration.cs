@@ -14,8 +14,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 namespace SpaceTraders.Client
 {
@@ -180,7 +180,7 @@ namespace SpaceTraders.Client
         /// <summary>
         /// Gets or sets the base path for API access.
         /// </summary>
-        public virtual string BasePath 
+        public virtual string BasePath
         {
             get { return _basePath; }
             set { _basePath = value; }
@@ -273,7 +273,7 @@ namespace SpaceTraders.Client
         /// This helper property simplifies code generation.
         /// </summary>
         /// <value>The access token.</value>
-        public virtual string AccessToken { get; set; }
+        public virtual string? AccessToken { get; set; }
 
         /// <summary>
         /// Gets or sets the temporary folder path to store the files downloaded from the server.
@@ -505,7 +505,7 @@ namespace SpaceTraders.Client
 
             return url;
         }
-        
+
         /// <summary>
         /// Gets and Sets the RemoteCertificateValidationCallback
         /// </summary>
@@ -522,7 +522,7 @@ namespace SpaceTraders.Client
         {
             string report = "C# SDK (SpaceTraders) Debug Report:\n";
             report += "    OS: " + System.Environment.OSVersion + "\n";
-            report += "    .NET Framework Version: " + System.Environment.Version  + "\n";
+            report += "    .NET Framework Version: " + System.Environment.Version + "\n";
             report += "    Version of the API: 2.0.0\n";
             report += "    SDK Package Version: 1.0.0\n";
 

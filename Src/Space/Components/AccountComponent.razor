@@ -1,33 +1,63 @@
 ﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using Space.Helpers;
 @using Space.Models;
 @using SpaceTraders.Api;
 @using SpaceTraders.Client;
 @using SpaceTraders.Model;
 
+@implements IDisposable;
+
 @inject IConfiguration Configuration;
 @inject Configuration SpaceConfiration;
 @inject SpaceApplication Application;
 @inject ProtectedLocalStorage LocalStorage;
+@inject IJSRuntime JsRuntime;
+@inject NavigationManager NavigationManager;
 
-<div style="display:flex; gap:1em;">
-    <label>
-        Account
-        <select @bind="SelectedAccountKey">
-            @foreach (var account in mAccounts)
-            {
-                <option selected=@(this.SelectedAccountKey == account.Key) value=@account.Key>@account.Name</option>
-            }
-        </select>
-    </label>
-<a href="/register">New</a>
+<div style="display:flex; flex-direction:column; gap:.5em;">
+    <div style="display:flex; gap:1em;">
+        <label>
+            Account
+            <select @bind="SelectedAccountKey">
+                @foreach (var account in mAccounts)
+                {
+                    <option selected=@(this.SelectedAccountKey == account.Key) value=@account.Key>@account.Name</option>
+                }
+            </select>
+        </label>
+        <button @onclick=this.ForgetButton_Click>Forget</button>
+        <a href="/register">New</a>
+        <a href="/import">Import</a>
+    </div>
+
+    @if (this.Application.Agent.Value is not null)
+    {
+        <div style="display:flex; gap: 1em;">
+            <div>Credits: @(this.Application.Agent.Value.Credits)u</div>
+            <div>
+                Home:
+                <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.Application.Agent.Value.Headquarters)>
+                    @this.Application.Agent.Value.Headquarters
+                </a>
+            </div>
+        </div>
+    }
 </div>
 
 @code {
     private PlayerAccount[] mAccounts = Array.Empty<PlayerAccount>();
 
-    private string SelectedAccountKey
+    protected override void OnInitialized()
     {
-        get => SpaceConfiration.AccessToken;
+        base.OnInitialized();
+
+        this.Application.Agent.Changed += this.ApplicationAgent_Changed;
+        this.NavigationManager.LocationChanged += this.NavigationManager_LocationChanged;
+    }
+
+    private string? SelectedAccountKey
+    {
+        get => this.SpaceConfiration.AccessToken;
         set
         {
             _ = this.Application.SetPlayerAccessToken(value);
@@ -52,5 +82,40 @@
 
             this.StateHasChanged();
         }
+    }
+
+    private async Task ForgetButton_Click()
+    {
+        var isSure = await JsRuntime.InvokeAsync<bool>("confirm", "You are you sure you want to forget this account?");
+        if (!isSure)
+        {
+            return;
+        }
+
+        var newAccounts = mAccounts.Where(a => a.Key != this.SelectedAccountKey).ToArray();
+
+        await this.LocalStorage.SetAsync("Accounts", newAccounts);
+
+        mAccounts = newAccounts;
+
+        this.SelectedAccountKey = newAccounts.FirstOrDefault()?.Key;
+
+        this.StateHasChanged();
+    }
+
+    private void ApplicationAgent_Changed(Observable<Agent?> observable)
+    {
+        this.InvokeAsync(this.StateHasChanged);
+    }
+
+    private void NavigationManager_LocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        this.InvokeAsync(this.StateHasChanged);
+    }
+
+    void IDisposable.Dispose()
+    {
+        this.Application.Agent.Changed -= this.ApplicationAgent_Changed;
+        this.NavigationManager.LocationChanged -= this.NavigationManager_LocationChanged;
     }
 }

@@ -1,33 +1,46 @@
-﻿@using Space.Models;
+﻿@using Space.Helpers;
+@using Space.Models;
 @using SpaceTraders.Api;
+@using SpaceTraders.Client;
 @using SpaceTraders.Model;
 
+@implements IDisposable;
+
+@inject Configuration Config;
 @inject SpaceApplication Application;
+@inject NavigationManager NavigationManager;
 
 @if (this.Contract == null)
 {
     return;
 }
 
-<div class="panel">
-    <div>@this.Contract.Value.Type</div>
-    <div>Accepted: @this.Contract.Value.Accepted</div>
-    @if (this.Contract.Value.Accepted)
-    {
-        <div>Deadline: @this.Contract.Value.Terms.Deadline</div>
-    }
-    else
-    {
-        <div>Deadline: @this.Contract.Value.DeadlineToAccept</div>
-        <button @onclick="AcceptButton_Click">Accept</button>
-    }
-    <div>Payment: @this.Contract.Value.Terms.Payment.OnAccepted + @this.Contract.Value.Terms.Payment.OnFulfilled</div>
-    <div class="panel">
-        @foreach (var delivery in this.Contract.Value.Terms.Deliver)
-        {
-            <div>Deliver: @delivery.UnitsFulfilled/@delivery.UnitsRequired @delivery.TradeSymbol to @delivery.DestinationSymbol</div>
-        }
+<div class="panel" style="gap: 1em;">
+    <div>
+        <div>@this.Contract.Value.Type</div>
+        <div>Accepted: @this.Contract.Value.Accepted</div>
+        <div>Deadline: @(this.Contract.Value.Accepted ? this.Contract.Value.Terms.Deadline : this.Contract.Value.DeadlineToAccept)</div>
+        <div>Payment: @(this.Contract.Value.Terms.Payment.OnAccepted)u + @(this.Contract.Value.Terms.Payment.OnFulfilled)u</div>
     </div>
+    <details open>
+        <summary>Contract</summary>
+        <ul>
+            @foreach (var delivery in this.Contract.Value.Terms.Deliver)
+            {
+                <li>
+                    Deliver: @delivery.UnitsFulfilled/@delivery.UnitsRequired @delivery.TradeSymbol to
+                    <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, delivery.DestinationSymbol)>
+                        @delivery.DestinationSymbol
+                    </a>
+                </li>
+            }
+        </ul>
+    </details>
+
+    @if (!this.Contract.Value.Accepted)
+    {
+        <button @onclick=this.AcceptButton_Click>Accept</button>
+    }
 </div>
 
 @code {
@@ -37,6 +50,13 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+
+        this.NavigationManager.LocationChanged += this.NavigationManager_LocationChanged;
+
+        if (this.Contract != null)
+        {
+            this.Contract.Changed += this.Contract_Changed;
+        }
     }
 
     private async Task AcceptButton_Click()
@@ -46,7 +66,7 @@
             return;
         }
 
-        var result = await new ContractsApi().AcceptContractAsync(this.Contract.Value.Id);
+        var result = await new ContractsApi(this.Config).AcceptContractAsync(this.Contract.Value.Id);
         if (result is null)
         {
             return;
@@ -54,5 +74,25 @@
 
         this.Contract.Value = result.Data.Contract;
         this.Application.Agent.Value = result.Data.Agent;
+    }
+
+    private void Contract_Changed(Observable<Contract> observable)
+    {
+        this.InvokeAsync(this.StateHasChanged);
+    }
+
+    private void NavigationManager_LocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        this.InvokeAsync(this.StateHasChanged);
+    }
+
+    void IDisposable.Dispose()
+    {
+        this.NavigationManager.LocationChanged -= this.NavigationManager_LocationChanged;
+
+        if (this.Contract != null)
+        {
+            this.Contract.Changed -= this.Contract_Changed;
+        }
     }
 }

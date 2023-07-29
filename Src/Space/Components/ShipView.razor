@@ -1,0 +1,118 @@
+﻿@using Space.Helpers;
+@using Space.Models;
+@using SpaceTraders.Api;
+@using SpaceTraders.Model;
+
+@implements IDisposable;
+
+@inject NavigationManager NavigationManager;
+
+@{
+    if (this.Ship == null)
+    {
+        return;
+    }
+
+    this.NavigationManager.TryGetQueryString(Navigation.SELECTED_SHIP_QUERY_STRING_KEY, out var selectedShip);
+    var isSelectedClass = selectedShip == this.Ship.Value.Registration.Name ? "selected" : null;
+}
+
+<div class="panel ship @isSelectedClass">
+    <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_SHIP_QUERY_STRING_KEY, this.Ship.Value.Registration.Name)
+       title="@this.Ship.Value.Frame.Description">
+        @this.Ship.Value.Registration.Role-@this.Ship.Value.Frame.Symbol
+    </a>
+
+    @if(this.ShowFuel)
+    {
+        <div>Fuel: @this.Ship.Value.Fuel.Current / @this.Ship.Value.Fuel.Capacity</div>
+    }
+
+    @if (this.Ship.Value.Cargo.Capacity > 0)
+    {
+        <div>Cargo: @this.Ship.Value.Cargo.Units / @this.Ship.Value.Cargo.Capacity</div>
+    }
+
+    @if (this.ShowCrew && this.Ship.Value.Crew.Capacity > 0)
+    {
+        <div>Crew: @this.Ship.Value.Crew.Current / @this.Ship.Value.Crew.Capacity</div>
+        if (this.ShowCrewMorale)
+        {
+            <div>Crew Morale: @this.Ship.Value.Crew.Morale</div>
+        }
+    }
+
+    @if (this.ShowLocation)
+    {
+        <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.Ship.Value.Nav.WaypointSymbol)>
+            Location: @this.Ship.Value.Nav.WaypointSymbol
+        </a>
+    }
+</div>
+
+<style>
+    .ship {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+        .ship.selected {
+            border-color: var(--selection-color);
+            box-shadow: 0 0 .2em .1em var(--selection-color);
+        }
+
+    ul {
+        padding-left: 1em;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public Observable<Ship>? Ship { get; set; }
+
+    [Parameter]
+    public bool ShowLocation { get; set; } = true;
+
+    [Parameter]
+    public bool ShowCrew { get; set; } = true;
+
+    [Parameter]
+    public bool ShowCrewMorale { get; set; } = false;
+
+    [Parameter]
+    public bool ShowFuel { get; set; } = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        if (this.Ship != null)
+        {
+            this.Ship.Changed += this.Ship_Changed;
+        }
+
+        this.NavigationManager.LocationChanged += this.NavigationManager_LocationChanged;
+    }
+
+    private void Ship_Changed(Observable<Ship> observable)
+    {
+        this.InvokeAsync(this.StateHasChanged);
+    }
+
+    private void NavigationManager_LocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        // State doesn't update when the query string changes, so we need to force it
+        this.StateHasChanged();
+    }
+
+    void IDisposable.Dispose()
+    {
+        if (this.Ship != null)
+        {
+            this.Ship.Changed -= this.Ship_Changed;
+        }
+
+        this.NavigationManager.LocationChanged -= this.NavigationManager_LocationChanged;
+    }
+}

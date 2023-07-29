@@ -1,0 +1,1 @@
+npx esbuild .\Src\Space\Client\map.mts --bundle --outdir=.\Src\Space\wwwroot\js\ --sourcemap --minify --splitting --format=esm --watch
