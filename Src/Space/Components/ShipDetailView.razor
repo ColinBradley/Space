@@ -12,79 +12,70 @@
     {
         return;
     }
-
-    this.NavigationManager.TryGetQueryString(Navigation.SELECTED_SHIP_QUERY_STRING_KEY, out var selectedShip);
-    var isSelectedClass = selectedShip == this.Ship.Value.Registration.Name ? "selected" : null;
 }
 
-<div class="panel ship @isSelectedClass">
-    <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_SHIP_QUERY_STRING_KEY, this.Ship.Value.Registration.Name)
-       title="@this.Ship.Value.Frame.Description">
-        @this.Ship.Value.Registration.Role-@this.Ship.Value.Frame.Symbol
-    </a>
+<div class="panel" style="display: grid; grid-template-columns: auto minmax(0, 1fr);">
+    <div>
+        <h2>@this.Ship.Value.Symbol</h2>
 
-    @if(this.ShowFuel)
-    {
+        <div title="@this.Ship.Value.Frame.Description">
+            @this.Ship.Value.Registration.Role-@this.Ship.Value.Frame.Symbol
+        </div>
+        <div>Module Slots: @this.Ship.Value.Frame.ModuleSlots</div>
+        <div>Mounting Points: @this.Ship.Value.Frame.MountingPoints</div>
+        <div>Frame Condition: @this.Ship.Value.Frame.Condition%</div>
+
         <div>Fuel: @this.Ship.Value.Fuel.Current / @this.Ship.Value.Fuel.Capacity</div>
-    }
+        <div title=@this.Ship.Value.Reactor.Description>Reactor: @this.Ship.Value.Reactor.Name</div>
+        <div>Reactor Power Out: @this.Ship.Value.Reactor.PowerOutput</div>
+        <div>Reactor Condition: @this.Ship.Value.Reactor.Condition%</div>
+        <div title=@this.Ship.Value.Engine.Description>Engine: @this.Ship.Value.Engine.Name</div>
+        <div>Engine Speed: @this.Ship.Value.Engine.Speed</div>
+        <div>Engine Condition: @this.Ship.Value.Engine.Condition%</div>
 
-    @if (this.Ship.Value.Cargo.Capacity > 0)
-    {
-        <div>Cargo: @this.Ship.Value.Cargo.Units / @this.Ship.Value.Cargo.Capacity</div>
-    }
-
-    @if (this.ShowCrew && this.Ship.Value.Crew.Capacity > 0)
-    {
         <div>Crew: @this.Ship.Value.Crew.Current / @this.Ship.Value.Crew.Capacity</div>
-        if (this.ShowCrewMorale)
-        {
-            <div>Crew Morale: @this.Ship.Value.Crew.Morale</div>
-        }
-    }
-
-    @if (this.ShowLocation)
-    {
+        <div>Crew Morale: @this.Ship.Value.Crew.Morale%</div>
         <div>
             Location:
             <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.Ship.Value.Nav.WaypointSymbol)>
                 @this.Ship.Value.Nav.WaypointSymbol
             </a>
         </div>
-    }
+        <div>
+            Status: @this.Ship.Value.Nav.Status
+        </div>
+    </div>
+    <div class="panel">
+        <div>Cargo: @this.Ship.Value.Cargo.Units / @this.Ship.Value.Cargo.Capacity</div>
+        <div class="panel" style="display: flex; flex-wrap: wrap; gap: 1em;">
+            @foreach (var item in this.Ship.Value.Cargo.Inventory)
+            {
+                <div class="item" title=@item.Description>
+                    <div>@item.Name</div>
+                    <div>@item.Units</div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="actions">
+        @if (this.NavigationManager.TryGetQueryString(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, out var selectedWaypoint) &&
+        this.Ship.Value.Nav.WaypointSymbol != @selectedWaypoint)
+        {
+            <button>Travel to @selectedWaypoint</button>
+        }
+    </div>
 </div>
 
 <style>
-    .ship {
-        display: flex;
-        flex-direction: column;
-        gap: 0;
-    }
-
-        .ship.selected {
-            border-color: var(--selection-color);
-            box-shadow: 0 0 .2em .1em var(--selection-color);
-        }
-
-    ul {
-        padding-left: 1em;
+    .item {
+        width: 10em;
+        height: 10em;
     }
 </style>
 
 @code {
     [Parameter]
     public Observable<Ship>? Ship { get; set; }
-
-    [Parameter]
-    public bool ShowLocation { get; set; } = true;
-
-    [Parameter]
-    public bool ShowCrew { get; set; } = true;
-
-    [Parameter]
-    public bool ShowCrewMorale { get; set; } = false;
-
-    [Parameter]
-    public bool ShowFuel { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
     {

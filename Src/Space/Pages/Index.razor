@@ -20,6 +20,14 @@
     </div>
 
     <div class="panel">
+        <h2>Contracts</h2>
+        @foreach (var contract in this.Application.Contracts.Values)
+        {
+            <ContractView Contract=@contract />
+        }
+    </div>
+
+    <div class="panel">
         <h2>Ships</h2>
         <div style="display:flex; flex-wrap:wrap; gap:1em;">
             @foreach (var ship in this.Application.Ships.Values)
@@ -27,12 +35,15 @@
                 <ShipCardView Ship=@ship />
             }
         </div>
-    </div>
-    <div class="panel">
-        <h2>Contracts</h2>
-        @foreach (var contract in this.Application.Contracts.Values)
+
+        @if (this.NavigationManager.TryGetQueryString(Navigation.SELECTED_SHIP_QUERY_STRING_KEY, out var selectedWaypoint))
         {
-            <ContractView Contract=@contract />
+            var ship = this.Application.Ships.Values.FirstOrDefault(s => s.Value.Symbol == selectedWaypoint);
+
+            if (ship is not null)
+            {
+                <ShipDetailView Ship=@ship />
+            }
         }
     </div>
 

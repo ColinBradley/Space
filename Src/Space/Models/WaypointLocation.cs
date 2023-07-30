@@ -9,14 +9,12 @@ public sealed class WaypointLocation
         this.Symbol = symbol;
 
         var symbolParts = symbol.Split('-');
-        if (symbolParts is [var sector, ..])
-        {
-            this.Sector = sector;
-        }
-        else
+        if (symbolParts.Length is 0 or > 3)
         {
             throw new ArgumentException($"Invalid waypoint symbol: {symbol}", nameof(symbol));
         }
+
+        this.Sector = symbolParts[0];
 
         if (symbolParts is [_, var system, ..])
         {
