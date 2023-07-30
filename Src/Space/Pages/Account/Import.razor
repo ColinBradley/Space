@@ -1,0 +1,94 @@
+﻿@page "/account/import"
+
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using Space.Meta;
+@using Space.Models;
+@using SpaceTraders.Api;
+@using SpaceTraders.Client;
+@using SpaceTraders.Model;
+
+@inject ProtectedLocalStorage LocalStorage;
+
+<PageTitle>Space - Import</PageTitle>
+
+<div style="display:flex; flex-direction:column;">
+    <div style="padding:1em; display:flex; flex-direction:column; gap:1em;">
+        <h1>Account Import</h1>
+
+        <form onsubmit="return false">
+            <label>
+                Key
+                <input type="text" @bind="AccountKey" autofocus />
+            </label>
+            <button @onclick=ImportButton_Click type="submit">Import</button>
+        </form>
+    </div>
+
+    @if(!string.IsNullOrEmpty(mLastError))
+    {
+        <div style="margin:1em; color:red;">@mLastError</div>
+    }
+
+    @if (mIsAccountImported)
+    {
+        <div style="margin:1em;">
+            <h2>Account Imported</h2>
+            <div>The key account has been stored in your browser's storage. Head <a href="/">back</a> to get going.</div>
+        </div>
+    }
+
+    <a style="padding:1em;" href="/">Back</a>
+</div>
+
+<style>
+    form {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 1em;
+        align-items: end;
+    }
+
+    label {
+        display: flex;
+        flex-direction: column;
+    }
+
+    dt {
+        font-weight: bold;
+    }
+</style>
+
+@code {
+    private bool mIsAccountImported = false;
+    private string? mLastError = null;
+
+    private string AccountKey { get; set; } = string.Empty;
+
+    private async Task ImportButton_Click()
+    {
+        mLastError = null;
+        var api = new AgentsApi(new Configuration() { AccessToken = this.AccountKey });
+
+        GetMyAgent200Response agentResult;
+        try
+        {
+            agentResult = await api.GetMyAgentAsync();
+        } 
+        catch (ApiException ex)
+        {
+            mLastError = ex.Message;
+            return;
+        }
+
+        var accountsResult = await this.LocalStorage.GetAsync<PlayerAccount[]>("Accounts");
+
+        var accounts = accountsResult.Success && accountsResult.Value is not null ? new List<PlayerAccount>(accountsResult.Value) : new();
+
+        accounts.Add(new PlayerAccount() { Name = agentResult.Data.Symbol, Key = this.AccountKey });
+
+        await this.LocalStorage.SetAsync("Accounts", accounts);
+
+        mIsAccountImported = true;
+    }
+}

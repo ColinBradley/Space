@@ -47,7 +47,7 @@
                                 @foreach (var ship in ships)
                                 {
                                     <li>
-                                        <ShipView Ship=@ship ShowLocation=false ShowCrew=false />
+                                        <ShipCardView Ship=@ship ShowLocation=false ShowCrew=false />
                                     </li>
                                 }
                             </ul>
@@ -89,37 +89,39 @@
     private SystemModel? mSystem = null;
 
     [Parameter]
-    public SystemModel? System
-    {
-        get => mSystem;
-        set
-        {
-            if (value == mSystem)
-            {
-                return;
-            }
-
-            if (mSystem is not null)
-            {
-                mSystem.Changed -= this.System_Changed;
-            }
-
-            mSystem = value;
-
-            if (mSystem is not null)
-            {
-                mSystem.Changed += this.System_Changed;
-
-                _ = this.SendWaypointsToClient();
-            }
-        }
-    }
+    public SystemModel? System { get; set; }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
         this.NavigationManager.LocationChanged += this.NavigationManager_LocationChanged;
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        // I want to do this in the setter of the parameter.
+        // But Blazor gives a warning that it might cause side effects ¬_¬ (BL0007)
+        if (this.System == mSystem)
+        {
+            return;
+        }
+
+        if (mSystem is not null)
+        {
+            mSystem.Changed -= this.System_Changed;
+        }
+
+        mSystem = this.System;
+
+        if (mSystem is not null)
+        {
+            mSystem.Changed += this.System_Changed;
+
+            _ = this.SendWaypointsToClient();
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

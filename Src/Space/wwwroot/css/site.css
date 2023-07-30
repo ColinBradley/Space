@@ -30,6 +30,10 @@ input, select {
 	padding: .3em;
 }
 
+a, a:visited {
+	color: #1ea8ff;
+}
+
 .panel {
 	padding: 1em;
 	display: flex;

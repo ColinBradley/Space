@@ -44,9 +44,12 @@
 
     @if (this.ShowLocation)
     {
-        <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.Ship.Value.Nav.WaypointSymbol)>
-            Location: @this.Ship.Value.Nav.WaypointSymbol
-        </a>
+        <div>
+            Location:
+            <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.Ship.Value.Nav.WaypointSymbol)>
+                @this.Ship.Value.Nav.WaypointSymbol
+            </a>
+        </div>
     }
 </div>
 
