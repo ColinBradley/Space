@@ -1,0 +1,197 @@
+﻿@using MudBlazor
+@using Space.Helpers;
+@using Space.Models;
+@using SpaceTraders.Api;
+@using SpaceTraders.Client;
+@using SpaceTraders.Model;
+
+@implements IDisposable;
+
+@inject Configuration Configuration;
+@inject SpaceApplication Application;
+
+@if (mShipyard is null)
+{
+    return;
+}
+
+<div class="panel" style="max-height:90vh">
+    <h2>Shipyard</h2>
+
+    <MudTable Items=@mShipyard.Ships HorizontalScrollbar=true Dense=true RowClassFunc=@this.GetRowClass OnRowClick=@this.TableRow_Click T=ShipyardShip>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<ShipyardShip, object>(x => x.Name)">Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ShipyardShip, object>(x => x.PurchasePrice)">Price</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ShipyardShip, object>(x => x.Frame.Name)">Frame Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ShipyardShip, object>(x => x.Reactor.Name)">Reactor Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ShipyardShip, object>(x => x.Reactor.PowerOutput)">Power</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ShipyardShip, object>(x => x.Engine.Name)">Engine Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ShipyardShip, object>(x => x.Engine.Speed)">Speed</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ShipyardShip, object>(x => x.Mounts.Count)">Mounts</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ShipyardShip, object>(x => x.Frame.MountingPoints)">Mount Points</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ShipyardShip, object>(x => x.Modules.Count)">Modules</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ShipyardShip, object>(x => x.Frame.ModuleSlots)">Module Slots</MudTableSortLabel></MudTh>
+            <MudTh>Description</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Price"><CreditsView Credits=@context.PurchasePrice/></MudTd>
+            <MudTd DataLabel="FrameName"><span title=@context.Frame.Description>@TrimFrameName(context.Frame.Name)</span></MudTd>
+            <MudTd DataLabel="ReactorName">@context.Reactor.Name</MudTd>
+            <MudTd DataLabel="Power">@context.Modules.Sum(m => m.Requirements.Power) / @context.Reactor.PowerOutput</MudTd>
+            <MudTd DataLabel="EngineName">@context.Engine.Name</MudTd>
+            <MudTd DataLabel="Speed">@context.Engine.Speed</MudTd>
+            <MudTd DataLabel="Mounts">
+                <div>
+                    @foreach (var mount in context.Mounts.OrderBy(m => m.Name).GroupBy(m => m.Name))
+                    {
+                        <div title=@mount.First().Description>@mount.Key @("x" + mount.Count())</div>
+                    }
+                </div>
+            </MudTd>
+            <MudTd DataLabel="MountPoints">@context.Mounts.Count / @context.Frame.MountingPoints</MudTd>
+            <MudTd DataLabel="Modules">
+                <div>
+                    @foreach (var module in context.Modules.OrderBy(m => m.Name).GroupBy(m => m.Name))
+                    {
+                        var first = module.First();
+                        var totalCapacity = module.Sum(m => m.Capacity);
+
+                        <div title=@first.Description>@first.Name @(first.Capacity > 0 ? first.Capacity : string.Empty) @("x" + module.Count()) @(totalCapacity != first.Capacity ? $"({totalCapacity})" : string.Empty)</div>
+                    }
+                </div>
+            </MudTd>
+            <MudTd DataLabel="ModuleSlots">@context.Modules.Sum(m => m.Requirements.Slots) / @context.Frame.ModuleSlots</MudTd>
+            <MudTd DataLabel="Description"><span title=@context.Description>@context.Description</span></MudTd>
+        </RowTemplate>
+    </MudTable>
+
+    <div>
+        <div style="display: flex; gap: 1em;">
+            @{
+                var remainingBalance = this.Application.Agent.Value?.Credits - mSelectedShip?.PurchasePrice;
+            }
+            <button @onclick=this.BuyButton_Click disabled=@(remainingBalance is <0 or null)>Buy</button>
+            @if (remainingBalance is not null)
+            {
+                <div>Balance After: <CreditsView Credits=@remainingBalance.Value/></div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .item {
+        width: 10em;
+        height: 10em;
+    }
+
+    .mud-table-row.selected {
+        background-color: var(--selection-color-background);
+    }
+
+        .mud-table-row.selected:hover {
+            background-color: var(--selection-color-background-active);
+        }
+
+    .mud-table-row:hover {
+        background-color: #AAA1;
+    }
+
+    .mud-table-cell {
+        white-space: nowrap;
+        padding: .1em .5em !important;
+    }
+
+        .mud-table-cell[data-label="Description"] > span {
+            min-width: 40em;
+            max-height: 3lh;
+            display: inline-block;
+            white-space: normal;
+            overflow: hidden;
+        }
+</style>
+
+@code {
+    private Shipyard? mShipyard;
+    private ShipyardShip? mSelectedShip;
+
+    [Parameter]
+    public string? WaypointSymbol { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        this.Application.Agent.Changed += this.ApplicationAgent_Changed;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        if (string.IsNullOrEmpty(this.WaypointSymbol))
+        {
+            return;
+        }
+
+        var location = new WaypointLocation(this.WaypointSymbol);
+
+        mShipyard = (await new SystemsApi(this.Configuration).GetShipyardAsync(location.SectorAndSystem, this.WaypointSymbol)).Data;
+    }
+
+    private void ApplicationAgent_Changed(Observable<Agent?> observable)
+    {
+        this.InvokeAsync(this.StateHasChanged);
+    }
+
+    private void TableRow_Click(TableRowClickEventArgs<ShipyardShip> e)
+    {
+        if (e.MouseEventArgs.CtrlKey && mSelectedShip == e.Item)
+        {
+            mSelectedShip = null;
+        }
+        else
+        {
+            mSelectedShip = e.Item;
+        }
+    }
+
+    private async Task BuyButton_Click()
+    {
+        if (mSelectedShip is null)
+        {
+            return;
+        }
+
+        var request = new PurchaseShipRequest(mSelectedShip.Type!.Value, this.WaypointSymbol);
+        var result = (await new FleetApi(this.Configuration).PurchaseShipAsync(request)).Data;
+        
+        this.Application.Agent.Value = result.Agent;
+
+        await Task.WhenAll(new[]
+        {
+            this.Application.UpdateShips()
+        });
+    }
+
+    private string GetRowClass(ShipyardShip ship, int rowNumber)
+    {
+        return ship == mSelectedShip ? "selected" : string.Empty;
+    }
+
+    private static string TrimFrameName(string name)
+    {
+        if (name.StartsWith("Frame "))
+        {
+            return name.Substring(6);
+        }
+
+        return name;
+    }
+
+    void IDisposable.Dispose()
+    {
+        this.Application.Agent.Changed -= this.ApplicationAgent_Changed;
+    }
+}

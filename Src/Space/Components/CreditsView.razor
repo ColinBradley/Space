@@ -1,0 +1,21 @@
+﻿<span class="unit">C</span><span class="value @(this.Credits < 0 ? "negative" : string.Empty)">@this.Credits.ToString("n0")</span>
+
+<style>
+    .unit {
+        text-decoration: line-through;
+        opacity: .9;
+    }
+
+    .value {
+        color: gold;
+    }
+
+    .value.negative {
+        color: red;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public long Credits { get; set; }
+}

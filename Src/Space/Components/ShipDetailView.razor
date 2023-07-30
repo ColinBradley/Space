@@ -1,11 +1,13 @@
 ﻿@using Space.Helpers;
 @using Space.Models;
 @using SpaceTraders.Api;
+@using SpaceTraders.Client;
 @using SpaceTraders.Model;
 
 @implements IDisposable;
 
 @inject NavigationManager NavigationManager;
+@inject Configuration Configuration;
 
 @{
     if (this.Ship == null)
@@ -37,13 +39,22 @@
         <div>Crew Morale: @this.Ship.Value.Crew.Morale%</div>
         <div>
             Location:
-            <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.Ship.Value.Nav.WaypointSymbol)>
-                @this.Ship.Value.Nav.WaypointSymbol
+            <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.Ship.Value.Nav.Route.Departure.Symbol)>
+                @this.Ship.Value.Nav.Route.Departure.Symbol
             </a>
         </div>
-        <div>
-            Status: @this.Ship.Value.Nav.Status
-        </div>
+        <div>Status: @this.Ship.Value.Nav.Status</div>
+        @if (this.Ship.Value.Nav.Status == ShipNavStatus.INTRANSIT)
+        {
+            <div>
+                To:
+                <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.Ship.Value.Nav.WaypointSymbol)>
+                    @this.Ship.Value.Nav.WaypointSymbol
+                </a>
+            </div>
+            <div>Arrive At: @this.Ship.Value.Nav.Route.Arrival</div>
+            <div>Flight Mode: @this.Ship.Value.Nav.FlightMode</div>
+        }
     </div>
     <div class="panel">
         <div>Cargo: @this.Ship.Value.Cargo.Units / @this.Ship.Value.Cargo.Capacity</div>
@@ -57,11 +68,28 @@
             }
         </div>
     </div>
-    <div class="actions">
-        @if (this.NavigationManager.TryGetQueryString(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, out var selectedWaypoint) &&
+    <div style="display:flex; gap:1em;">
+        @if (this.Ship.Value.Nav.Status == ShipNavStatus.DOCKED)
+        {
+            <button @onclick=this.RefuelButton_Click disabled=@(this.Ship.Value.Fuel.Current == this.Ship.Value.Fuel.Capacity)>Refuel</button>
+            <button @onclick=this.UndockButton_Click>Undock</button>
+        }
+
+        @if (this.Ship.Value.Nav.Status == ShipNavStatus.INORBIT)
+        {
+            <button @onclick=this.DockButton_Click>Dock</button>
+
+            if (CanShipMine(this.Ship.Value))
+            {
+                <button @onclick=this.ExtractResourcesButton_Click>Extract Resources</button>
+            }
+        }
+
+        @if (this.Ship.Value.Nav.Status == ShipNavStatus.INORBIT &&
+        this.NavigationManager.TryGetQueryString(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, out var selectedWaypoint) &&
         this.Ship.Value.Nav.WaypointSymbol != @selectedWaypoint)
         {
-            <button>Travel to @selectedWaypoint</button>
+            <button @onclick=this.TravelToButton_Click>Travel to @selectedWaypoint</button>
         }
     </div>
 </div>
@@ -74,6 +102,8 @@
 </style>
 
 @code {
+    private string? mLastError;
+
     [Parameter]
     public Observable<Ship>? Ship { get; set; }
 
@@ -99,6 +129,98 @@
         // State doesn't update when the query string changes, so we need to force it
         this.StateHasChanged();
     }
+
+    private async Task RefuelButton_Click()
+    {
+        if (this.Ship is null)
+        {
+            return;
+        }
+
+        await new FleetApi(this.Configuration)
+            .RefuelShipAsync(this.Ship.Value.Symbol);
+
+        await this.UpdateShip();
+    }
+
+    private async Task DockButton_Click()
+    {
+        if (this.Ship is null)
+        {
+            return;
+        }
+
+        await new FleetApi(this.Configuration)
+            .DockShipAsync(this.Ship.Value.Symbol);
+
+        await this.UpdateShip();
+    }
+
+    private async Task UndockButton_Click()
+    {
+        if (this.Ship is null)
+        {
+            return;
+        }
+
+        await new FleetApi(this.Configuration)
+            .OrbitShipAsync(this.Ship.Value.Symbol);
+
+        await this.UpdateShip();
+    }
+
+    private async Task TravelToButton_Click()
+    {
+        if (this.Ship is null || !this.NavigationManager.TryGetQueryString(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, out var selectedWaypoint))
+        {
+            return;
+        }
+
+        await new FleetApi(this.Configuration)
+            .NavigateShipAsync(this.Ship.Value.Symbol, new NavigateShipRequest(selectedWaypoint));
+
+        await this.UpdateShip();
+    }
+
+    private async Task ExtractResourcesButton_Click()
+    {
+        if (this.Ship is null)
+        {
+            return;
+        }
+
+        try
+        {
+            var result = await new FleetApi(this.Configuration)
+                    .ExtractResourcesAsync(this.Ship.Value.Symbol, new ExtractResourcesRequest());
+        } 
+        catch (ApiException e) when (e.ErrorCode == 4000)
+        {
+            // Not ready yet
+            mLastError = e.Message;
+            return;
+        }
+
+        await this.UpdateShip();
+    }
+
+    private async Task UpdateShip()
+    {
+        if (this.Ship is null)
+        {
+            return;
+        }
+
+        this.Ship.Value =
+            (await new FleetApi(this.Configuration)
+                .GetMyShipAsync(this.Ship.Value.Symbol)).Data;
+    }
+
+    private static bool CanShipMine(Ship ship) =>
+        ship.Mounts.Any(m =>
+            m.Symbol is ShipMount.SymbolEnum.MININGLASERI or
+                ShipMount.SymbolEnum.MININGLASERII or
+                ShipMount.SymbolEnum.MININGLASERIII);
 
     void IDisposable.Dispose()
     {

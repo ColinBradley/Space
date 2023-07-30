@@ -86,7 +86,7 @@ public class SpaceApplication
         return sSystems;
     }
 
-    private async Task UpdateAgent()
+    public async Task UpdateAgent()
     {
         try
         {
@@ -101,7 +101,7 @@ public class SpaceApplication
         }
     }
 
-    private async Task UpdateShips()
+    public async Task UpdateShips()
     {
         this.Ships.SetValues(
             (await new FleetApi(mConfiguration).GetMyShipsAsync())
@@ -115,7 +115,7 @@ public class SpaceApplication
         }
     }
 
-    private async Task UpdateContracts()
+    public async Task UpdateContracts()
     {
         this.Contracts.SetValues(
             (await new ContractsApi(mConfiguration).GetContractsAsync())

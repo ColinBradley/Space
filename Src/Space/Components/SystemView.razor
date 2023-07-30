@@ -9,16 +9,21 @@
 @inject NavigationManager NavigationManager;
 @inject IJSRuntime JSRuntime;
 
+@{
+    this.NavigationManager.TryGetQueryString(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, out var selectedWaypointSymbol);
+    var selectedWaypoint = this.System?.Waypoints.Values.FirstOrDefault(w => w.Value.Symbol == selectedWaypointSymbol);
+    var hasShipyard = selectedWaypoint?.Value.Traits.Any(t => t.Symbol == WaypointTrait.SymbolEnum.SHIPYARD) ?? false;
+    var hasMarket = selectedWaypoint?.Value.Traits.Any(t => t.Symbol == WaypointTrait.SymbolEnum.MARKETPLACE || t.Symbol == WaypointTrait.SymbolEnum.BLACKMARKET) ?? false;
+
+}
+
 <div class="panel" style="display: @(this.System == null? "none": "flex"); flex-direction: column; gap: 1em;">
     <h2>Waypoints</h2>
 
     <div style="display: grid;gap: 1em;grid-auto-flow: dense;grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));">
-        @{
-            this.NavigationManager.TryGetQueryString(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, out var selectedWaypoint);
-        }
         @foreach (var waypoint in this.System?.Waypoints.Values.Select(o => o.Value) ?? Array.Empty<Waypoint>())
         {
-            var isSelectedClass = waypoint.Symbol == selectedWaypoint ? "selected" : string.Empty;
+            var isSelectedClass = waypoint.Symbol == selectedWaypointSymbol ? "selected" : string.Empty;
 
             <div class="waypoint panel @isSelectedClass">
                 <div class="head">
@@ -57,6 +62,11 @@
             </div>
         }
     </div>
+
+    @if (hasShipyard)
+    {
+        <ShipyardView WaypointSymbol=@selectedWaypointSymbol />
+    }
 
     <div class="panel">
         <h2>Map</h2>

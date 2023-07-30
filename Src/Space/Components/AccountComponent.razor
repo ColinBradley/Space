@@ -36,8 +36,8 @@
 
     @if (this.Application.Agent.Value is not null)
     {
-        <div style="display:flex; gap: 1em;">
-            <div>Credits: @(this.Application.Agent.Value.Credits)u</div>
+        <div style="display:flex; gap: 1em; position:sticky; top: 0;">
+            <div>Credits: <CreditsView Credits=@this.Application.Agent.Value.Credits/></div>
             <div>
                 Home:
                 <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.Application.Agent.Value.Headquarters)>

@@ -20,7 +20,7 @@
         <div>@this.Contract.Value.Type</div>
         <div>Accepted: @this.Contract.Value.Accepted</div>
         <div>Deadline: @(this.Contract.Value.Accepted ? this.Contract.Value.Terms.Deadline : this.Contract.Value.DeadlineToAccept)</div>
-        <div>Payment: @(this.Contract.Value.Terms.Payment.OnAccepted)u + @(this.Contract.Value.Terms.Payment.OnFulfilled)u</div>
+        <div>Payment: <CreditsView Credits=@this.Contract.Value.Terms.Payment.OnAccepted/> + <CreditsView Credits=@this.Contract.Value.Terms.Payment.OnFulfilled/></div>
     </div>
     <details open>
         <summary>Contract</summary>

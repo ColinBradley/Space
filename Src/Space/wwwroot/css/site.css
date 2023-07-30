@@ -4,10 +4,12 @@
 	--border-color: #7777;
 	--active-border-color: #777;
 	--selection-color: dodgerblue;
+	--selection-color-background: #2186ff38;
+	--selection-color-background-active: #2186ff60;
 }
 
 * {
-	transition: .2s all;
+	transition: .1s all;
 }
 
 body {
@@ -24,6 +26,11 @@ h1, h2, h3, h4, label {
 
 button {
 	padding: .3em 2em;
+	border: 1px solid white;
+}
+
+button[disabled] {
+	opacity: .5;
 }
 
 input, select {

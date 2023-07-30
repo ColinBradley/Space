@@ -1,3 +1,4 @@
+using MudBlazor.Services;
 using Space.Models;
 using SpaceTraders.Client;
 
@@ -6,6 +7,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<Configuration>();
 builder.Services.AddScoped<SpaceApplication>();
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 
