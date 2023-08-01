@@ -3,18 +3,13 @@
 @using SpaceTraders.Api;
 @using SpaceTraders.Model;
 
-@implements IDisposable;
+@inherits SpaceComponentBase;
 
-@inject SpaceApplication Application;
-@inject NavigationManager NavigationManager;
 @inject IJSRuntime JSRuntime;
 
 @{
-    this.NavigationManager.TryGetQueryString(Navigation.SELECTED_SHIP_QUERY_STRING_KEY, out var selectedShipSymbol);
-    this.NavigationManager.TryGetQueryString(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, out var selectedWaypointSymbol);
-    var selectedWaypoint = this.System?.Waypoints.Values.FirstOrDefault(w => w.Value.Symbol == selectedWaypointSymbol);
-    var hasShipyard = selectedWaypoint?.Value.Traits.Any(t => t.Symbol == WaypointTrait.SymbolEnum.SHIPYARD) ?? false;
-    var hasMarket = selectedWaypoint?.Value.Traits.Any(t => t.Symbol == WaypointTrait.SymbolEnum.MARKETPLACE || t.Symbol == WaypointTrait.SymbolEnum.BLACKMARKET) ?? false;
+    var hasShipyard = this.Application.SelectedWaypoint.Value?.Traits.Any(t => t.Symbol == WaypointTrait.SymbolEnum.SHIPYARD) ?? false;
+    var hasMarket = this.Application.SelectedWaypoint.Value?.Traits.Any(t => t.Symbol == WaypointTrait.SymbolEnum.MARKETPLACE || t.Symbol == WaypointTrait.SymbolEnum.BLACKMARKET) ?? false;
 }
 
 <div class="panel" style="display: @(this.System == null? "none": "flex"); flex-direction: column; gap: 1em;">
@@ -23,14 +18,11 @@
     <div style="display: grid;gap: 1em;grid-auto-flow: dense;grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));">
         @foreach (var waypoint in this.System?.Waypoints.Values.Select(o => o.Value) ?? Array.Empty<Waypoint>())
         {
-            var isSelectedClass = waypoint.Symbol == selectedWaypointSymbol ? "selected" : string.Empty;
+            var isSelectedClass = waypoint.Symbol == this.Application.SelectedWaypoint.Value?.Symbol ? "selected" : string.Empty;
 
-            <div class="waypoint panel @isSelectedClass">
+            <div @onclick="() => this.Application.SetSelectedWaypoint(waypoint.Symbol)" class="waypoint panel @isSelectedClass">
                 <div class="head">
-                    <a title="@waypoint.Faction.Symbol"
-                       href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, waypoint.Symbol)>
-                        @(new WaypointLocation(waypoint.Symbol).Waypoint)
-                    </a>
+                    <LocationLinkComponent Symbol=@waypoint.Symbol UseShortName=true/>
                     <div>@SystemModel.GetHumanName(waypoint.Type)</div>
                 </div>
 
@@ -65,11 +57,11 @@
 
     @if (hasShipyard)
     {
-        <ShipyardView WaypointSymbol=@selectedWaypointSymbol />
+        <ShipyardView />
     }
     @if (hasMarket)
     {
-        <MarketplaceView WaypointSymbol=@selectedWaypointSymbol ShipSymbol=@selectedShipSymbol />
+        <MarketplaceView />
     }
 
     <div class="panel">
@@ -80,7 +72,7 @@
 
 <style>
     .waypoint {
-        gap: 0;
+        gap: .5em;
     }
 
         .waypoint .head {
@@ -105,16 +97,9 @@
     [Parameter]
     public SystemModel? System { get; set; }
 
-    protected override void OnInitialized()
+    protected override async Task OnParametersSetAsync()
     {
-        base.OnInitialized();
-
-        this.NavigationManager.LocationChanged += this.NavigationManager_LocationChanged;
-    }
-
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
+        await base.OnParametersSetAsync();
 
         // I want to do this in the setter of the parameter.
         // But Blazor gives a warning that it might cause side effects ¬_¬ (BL0007)
@@ -134,7 +119,7 @@
         {
             mSystem.Changed += this.System_Changed;
 
-            _ = this.SendWaypointsToClient();
+            await this.SendWaypointsToClient();
         }
     }
 
@@ -179,19 +164,13 @@
         });
     }
 
-    private void NavigationManager_LocationChanged(object? sender, LocationChangedEventArgs e)
+    protected override void DisposeCore()
     {
-        // State doesn't update when the query string changes, so we need to force it
-        this.StateHasChanged();
-    }
+        base.DisposeCore();
 
-    void IDisposable.Dispose()
-    {
         if (mSystem is not null)
         {
             mSystem.Changed -= this.System_Changed;
         }
-
-        this.NavigationManager.LocationChanged -= this.NavigationManager_LocationChanged;
     }
 }

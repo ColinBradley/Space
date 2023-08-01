@@ -3,9 +3,7 @@
 @using SpaceTraders.Api;
 @using SpaceTraders.Model;
 
-@implements IDisposable;
-
-@inject NavigationManager NavigationManager;
+@inherits SpaceComponentBase;
 
 @{
     if (this.ShipModel == null)
@@ -13,18 +11,14 @@
         return;
     }
 
-    var isSelectedClass =
-        this.NavigationManager.TryGetQueryString(Navigation.SELECTED_SHIP_QUERY_STRING_KEY, out var selectedShip) &&
-        selectedShip == this.ShipModel.Ship.Registration.Name ? "selected" : null;
+    var isSelectedClass = this.Application.SelectedShip.Value?.Ship.Symbol == this.ShipModel.Ship.Symbol ? "selected" : null;
 }
 
-<div class="panel ship @isSelectedClass">
-    <span>
-        <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_SHIP_QUERY_STRING_KEY, this.ShipModel.Ship.Registration.Name)>
-            @this.ShipModel.Ship.Symbol
-        </a>
+<div @onclick="() => this.Application.SelectedShip.Value = this.ShipModel" class="panel ship @isSelectedClass">
+    <div>
+        @this.ShipModel.Ship.Symbol
         <span title="@this.ShipModel.Ship.Frame.Description">(@this.ShipModel.Ship.Registration.Role-@this.ShipModel.Ship.Frame.Symbol)</span>
-    </span>
+    </div>
 
     @if (this.ShowFuel && this.ShipModel.Ship.Fuel.Capacity > 0)
     {
@@ -57,7 +51,7 @@
     {
         <div>
             Location:
-            <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.ShipModel.Ship.Nav.WaypointSymbol)>
+            <a @onclick="() => this.Application.SetSelectedWaypoint(this.ShipModel.Ship.Nav.WaypointSymbol)">
                 @this.ShipModel.Ship.Nav.WaypointSymbol
             </a>
         </div>
@@ -69,6 +63,7 @@
         display: flex;
         flex-direction: column;
         gap: 0;
+        cursor: pointer;
     }
 
         .ship.selected {
@@ -101,8 +96,6 @@
         {
             this.ShipModel.Changed += this.Ship_Changed;
         }
-
-        this.NavigationManager.LocationChanged += this.NavigationManager_LocationChanged;
     }
 
     private void Ship_Changed()
@@ -110,19 +103,16 @@
         this.InvokeAsync(this.StateHasChanged);
     }
 
-    private void NavigationManager_LocationChanged(object? sender, LocationChangedEventArgs e)
+    private void SelectedShip_Changed(Observable<ShipModel?> observable)
     {
-        // State doesn't update when the query string changes, so we need to force it
-        this.StateHasChanged();
+        this.InvokeAsync(this.StateHasChanged);
     }
 
-    void IDisposable.Dispose()
+    protected override void DisposeCore()
     {
         if (this.ShipModel != null)
         {
             this.ShipModel.Changed -= this.Ship_Changed;
         }
-
-        this.NavigationManager.LocationChanged -= this.NavigationManager_LocationChanged;
     }
 }

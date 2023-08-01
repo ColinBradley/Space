@@ -6,10 +6,7 @@
 @using Space.Models;
 @using SpaceTraders.Model;
 
-@implements IDisposable;
-
-@inject SpaceApplication Application;
-@inject NavigationManager NavigationManager;
+@inherits SpaceComponentBase;
 
 <PageTitle>Space</PageTitle>
 
@@ -36,14 +33,9 @@
             }
         </div>
 
-        @if (this.NavigationManager.TryGetQueryString(Navigation.SELECTED_SHIP_QUERY_STRING_KEY, out var selectedWaypoint))
+        @if (this.Application.SelectedShip.Value is not null)
         {
-            var ship = this.Application.Ships.Values.FirstOrDefault(s => s.Value.Ship.Symbol == selectedWaypoint);
-
-            if (ship is not null)
-            {
-                <ShipDetailView Ship=@ship.Value />
-            }
+            <ShipDetailView Ship=@this.Application.SelectedShip.Value />
         }
     </div>
 
@@ -61,7 +53,7 @@
             </label>
         </h2>
 
-        <SystemView System="@mSelectedSystem" />
+        <SystemView System=@mSelectedSystem />
     </div>
 </div>
 
@@ -70,49 +62,25 @@
 
     private string SystemTextBoxValue { get; set; } = string.Empty;
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-
-        this.Application.Changed += this.Application_Changed;
-        this.NavigationManager.LocationChanged += this.NavigationManager_LocationChanged;
-
-        await this.TrySetSystemFromUrl();
-    }
-
-    private void Application_Changed()
-    {
-        _ = this.InvokeAsync(this.StateHasChanged);
-    }
-
     private async Task SystemTextbox_Input(ChangeEventArgs e)
     {
         mSelectedSystem = await this.Application.TryGetSystem(e.Value as string ?? string.Empty);
     }
 
-    private void NavigationManager_LocationChanged(object? sender, LocationChangedEventArgs e)
+    protected override async void OnSelectedWaypointChanged(Waypoint? selectedWaypoint)
     {
-        _ = this.TrySetSystemFromUrl();
+        base.OnSelectedWaypointChanged(selectedWaypoint);
 
-        this.StateHasChanged();
-    }
+        var systemSymbol = this.Application.SelectedWaypoint.Value?.SystemSymbol;
+        this.SystemTextBoxValue = systemSymbol ?? string.Empty;
 
-    private async Task TrySetSystemFromUrl()
-    {
-        if (!this.NavigationManager.TryGetQueryString(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, out var selectedWaypoint))
+        if (string.IsNullOrEmpty(systemSymbol))
         {
             return;
         }
 
-        this.SystemTextBoxValue = new WaypointLocation(selectedWaypoint).SectorAndSystem;
+        mSelectedSystem = await this.Application.TryGetSystem(systemSymbol);
 
-        mSelectedSystem = await this.Application.TryGetSystem(this.SystemTextBoxValue);
-
-        this.StateHasChanged();
-    }
-
-    public void Dispose()
-    {
-        this.Application.Changed -= this.Application_Changed;
+        await this.InvokeAsync(this.StateHasChanged);
     }
 }

@@ -4,11 +4,7 @@
 @using SpaceTraders.Client;
 @using SpaceTraders.Model;
 
-@implements IDisposable;
-
-@inject NavigationManager NavigationManager;
-@inject Configuration Configuration;
-@inject SpaceApplication Application;
+@inherits SpaceComponentBase;
 
 @{
     if (this.Ship == null)
@@ -40,7 +36,7 @@
         <div>Crew Morale: @this.Ship.Ship.Crew.Morale%</div>
         <div>
             Location:
-            <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.Ship.Ship.Nav.Route.Departure.Symbol)>
+            <a @onclick="() => this.Application.SetSelectedWaypoint(this.Ship.Ship.Nav.Route.Departure.Symbol)">
                 @this.Ship.Ship.Nav.Route.Departure.Symbol
             </a>
         </div>
@@ -49,7 +45,7 @@
         {
             <div>
                 To:
-                <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.Ship.Ship.Nav.WaypointSymbol)>
+                <a @onclick="() => this.Application.SetSelectedWaypoint(this.Ship.Ship.Nav.WaypointSymbol)">
                     @this.Ship.Ship.Nav.WaypointSymbol
                 </a>
             </div>
@@ -92,10 +88,9 @@
         }
 
         @if (this.Ship.Ship.Nav.Status == ShipNavStatus.INORBIT &&
-            this.NavigationManager.TryGetQueryString(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, out var selectedWaypoint) &&
-            this.Ship.Ship.Nav.WaypointSymbol != @selectedWaypoint)
+            this.Ship.Ship.Nav.WaypointSymbol != this.Application.SelectedWaypoint.Value?.Symbol)
         {
-            <button @onclick=this.TravelToButton_Click>Travel to @selectedWaypoint</button>
+            <button @onclick=this.TravelToButton_Click>Travel to @this.Application.SelectedWaypoint.Value?.Symbol</button>
         }
 
         @if (!string.IsNullOrEmpty(mLastError))
@@ -119,13 +114,6 @@
 
     [Parameter]
     public ShipModel? Ship { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-
-        this.NavigationManager.LocationChanged += this.NavigationManager_LocationChanged;
-    }
 
     protected override void OnParametersSet()
     {
@@ -200,13 +188,13 @@
 
     private async Task TravelToButton_Click()
     {
-        if (this.Ship is null || !this.NavigationManager.TryGetQueryString(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, out var selectedWaypoint))
+        if (this.Ship is null || this.Application.SelectedWaypoint.Value is null)
         {
             return;
         }
 
         var result = await new FleetApi(this.Configuration)
-            .NavigateShipAsync(this.Ship.Ship.Symbol, new NavigateShipRequest(selectedWaypoint));
+            .NavigateShipAsync(this.Ship.Ship.Symbol, new NavigateShipRequest(this.Application.SelectedWaypoint.Value.Symbol));
 
         this.Ship.Ship.Nav = result.Data.Nav;
         this.Ship.Ship.Fuel = result.Data.Fuel;
@@ -245,13 +233,13 @@
                 ShipMount.SymbolEnum.MININGLASERII or
                 ShipMount.SymbolEnum.MININGLASERIII);
 
-    void IDisposable.Dispose()
+    protected override void DisposeCore()
     {
+        base.DisposeCore();
+
         if (this.Ship != null)
         {
             this.Ship.Changed -= this.Ship_Changed;
         }
-
-        this.NavigationManager.LocationChanged -= this.NavigationManager_LocationChanged;
     }
 }

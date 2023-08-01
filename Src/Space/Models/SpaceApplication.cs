@@ -11,20 +11,26 @@ public class SpaceApplication
 
     private readonly ConcurrentDictionary<string, SystemModel?> mSystemsBySymbol = new();
 
-    private readonly Configuration mConfiguration;
-
     public event Action? Changed;
 
     public SpaceApplication(Configuration configuration)
     {
-        mConfiguration = configuration;
+        this.Configuration = configuration;
 
         this.Agent.Changed += _ => this.Changed?.Invoke();
         this.Contracts.Changed += _ => this.Changed?.Invoke();
         this.Ships.Changed += _ => this.Changed?.Invoke();
+        this.SelectedShip.Changed += _ => this.Changed?.Invoke();
+        this.SelectedWaypoint.Changed += _ => this.Changed?.Invoke();
     }
 
+    public Configuration Configuration { get; }
+
     public Observable<Agent?> Agent { get; } = new(null);
+
+    public Observable<ShipModel?> SelectedShip { get; } = new(null);
+
+    public Observable<Waypoint?> SelectedWaypoint { get; } = new(null);
 
     public ObservableCollection<Contract> Contracts { get; } = new(Array.Empty<Contract>(), c => c.Id);
 
@@ -34,12 +40,12 @@ public class SpaceApplication
 
     public async Task SetPlayerAccessToken(string? token)
     {
-        if (mConfiguration.AccessToken == token)
+        if (this.Configuration.AccessToken == token)
         {
             return;
         }
 
-        mConfiguration.AccessToken = token;
+        this.Configuration.AccessToken = token;
 
         if (string.IsNullOrEmpty(token))
         {
@@ -71,7 +77,7 @@ public class SpaceApplication
             return system;
         }
 
-        system = await SystemModel.TryCreate(mConfiguration, symbol);
+        system = await SystemModel.TryCreate(this.Configuration, symbol);
         mSystemsBySymbol.AddOrUpdate(symbol, system, (_, _) => system);
 
         this.Changed?.Invoke();
@@ -79,9 +85,31 @@ public class SpaceApplication
         return system;
     }
 
+    public async Task<bool> SetSelectedWaypoint(string symbol)
+    {
+        var waypoint = await this.GetWaypoint(symbol);
+        if (waypoint is null)
+        {
+            return false;
+        }
+
+        this.SelectedWaypoint.Value = waypoint;
+
+        return true;
+    }
+
+    public async Task<Waypoint?> GetWaypoint(string symbol)
+    {
+        var location = new WaypointLocation(symbol);
+        var system = await this.TryGetSystem(location.SectorAndSystem);
+
+        return system?.Waypoints.Values.FirstOrDefault(w => w.Value.Symbol == symbol)?.Value;
+    }
+
     public Task<SpaceSystem[]> GetSystems()
     {
-        sSystems ??= FetchSystems(mConfiguration);
+        // This can take like 2 mins to run so... yeah
+        sSystems ??= FetchSystems(this.Configuration);
 
         return sSystems;
     }
@@ -91,7 +119,7 @@ public class SpaceApplication
         try
         {
             this.Agent.Value =
-                (await new AgentsApi(mConfiguration).GetMyAgentAsync())
+                (await new AgentsApi(this.Configuration).GetMyAgentAsync())
                     ?.Data;
         }
         catch (ApiException ex) when (ex.ErrorCode == 401)
@@ -104,7 +132,7 @@ public class SpaceApplication
     public async Task UpdateShips()
     {
         this.Ships.SetValues(
-            (await new FleetApi(mConfiguration).GetMyShipsAsync())
+            (await new FleetApi(this.Configuration).GetMyShipsAsync())
                 ?.Data.Select(s => new ShipModel(s)).ToArray() ??
                 Array.Empty<ShipModel>());
 
@@ -118,7 +146,7 @@ public class SpaceApplication
     public async Task UpdateContracts()
     {
         this.Contracts.SetValues(
-            (await new ContractsApi(mConfiguration).GetContractsAsync())
+            (await new ContractsApi(this.Configuration).GetContractsAsync())
                 ?.Data.ToArray() ??
                 Array.Empty<Contract>());
     }

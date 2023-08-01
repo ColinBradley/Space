@@ -5,10 +5,7 @@
 @using SpaceTraders.Client;
 @using SpaceTraders.Model;
 
-@implements IDisposable;
-
-@inject Configuration Configuration;
-@inject SpaceApplication Application;
+@inherits SpaceComponentBase;
 
 @if (mShipyard is null)
 {
@@ -111,33 +108,20 @@
     private Shipyard? mShipyard;
     private ShipyardShip? mSelectedShip;
 
-    [Parameter]
-    public string? WaypointSymbol { get; set; }
-
-    protected override void OnInitialized()
+    protected override async void OnSelectedWaypointChanged(Waypoint? selectedWaypoint)
     {
-        base.OnInitialized();
+        base.OnSelectedWaypointChanged(selectedWaypoint);
 
-        this.Application.Agent.Changed += this.ApplicationAgent_Changed;
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        await base.OnParametersSetAsync();
-
-        if (string.IsNullOrEmpty(this.WaypointSymbol))
+        if (selectedWaypoint is null || !selectedWaypoint.Traits.Any(t => t.Symbol == WaypointTrait.SymbolEnum.SHIPYARD))
         {
+            mShipyard = null;
             return;
         }
 
-        var location = new WaypointLocation(this.WaypointSymbol);
+        var result = await new SystemsApi(this.Configuration).GetShipyardAsync(selectedWaypoint.SystemSymbol, selectedWaypoint.Symbol);
+        mShipyard = result.Data;
 
-        mShipyard = (await new SystemsApi(this.Configuration).GetShipyardAsync(location.SectorAndSystem, this.WaypointSymbol)).Data;
-    }
-
-    private void ApplicationAgent_Changed(Observable<Agent?> observable)
-    {
-        this.InvokeAsync(this.StateHasChanged);
+        await this.InvokeAsync(this.StateHasChanged);
     }
 
     private void TableRow_Click(TableRowClickEventArgs<ShipyardShip> e)
@@ -154,12 +138,12 @@
 
     private async Task BuyButton_Click()
     {
-        if (mSelectedShip is null)
+        if (mSelectedShip is null || this.Application.SelectedWaypoint.Value is null)
         {
             return;
         }
 
-        var request = new PurchaseShipRequest(mSelectedShip.Type!.Value, this.WaypointSymbol);
+        var request = new PurchaseShipRequest(mSelectedShip.Type!.Value, this.Application.SelectedWaypoint.Value.Symbol);
         var result = (await new FleetApi(this.Configuration).PurchaseShipAsync(request)).Data;
         
         this.Application.Agent.Value = result.Agent;
@@ -183,10 +167,5 @@
         }
 
         return name;
-    }
-
-    void IDisposable.Dispose()
-    {
-        this.Application.Agent.Changed -= this.ApplicationAgent_Changed;
     }
 }

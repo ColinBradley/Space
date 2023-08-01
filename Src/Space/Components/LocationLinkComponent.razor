@@ -1,0 +1,25 @@
+﻿@using Space.Models;
+
+@inject SpaceApplication Application;
+
+<button @onclick="() => this.Application.SetSelectedWaypoint(this.Symbol)" class="location">
+    @(this.UseShortName ? new WaypointLocation(this.Symbol).Waypoint : this.Symbol)
+</button>
+
+<style>
+    button.location {
+        display: inline;
+        color: #1ea8ff;
+        padding: 0;
+        border: none;
+        vertical-align: top;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public required string Symbol { get; set; }
+
+    [Parameter]
+    public bool UseShortName { get; set; }
+}

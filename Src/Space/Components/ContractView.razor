@@ -4,11 +4,7 @@
 @using SpaceTraders.Client;
 @using SpaceTraders.Model;
 
-@implements IDisposable;
-
-@inject Configuration Config;
-@inject SpaceApplication Application;
-@inject NavigationManager NavigationManager;
+@inherits SpaceComponentBase;
 
 @if (this.Contract == null)
 {
@@ -28,10 +24,7 @@
             @foreach (var delivery in this.Contract.Value.Terms.Deliver)
             {
                 <li>
-                    Deliver: @delivery.UnitsFulfilled/@delivery.UnitsRequired @delivery.TradeSymbol to
-                    <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, delivery.DestinationSymbol)>
-                        @delivery.DestinationSymbol
-                    </a>
+                    Deliver: @delivery.UnitsFulfilled/@delivery.UnitsRequired @delivery.TradeSymbol to <LocationLinkComponent Symbol=@delivery.DestinationSymbol/>
                 </li>
             }
         </ul>
@@ -51,8 +44,6 @@
     {
         await base.OnInitializedAsync();
 
-        this.NavigationManager.LocationChanged += this.NavigationManager_LocationChanged;
-
         if (this.Contract != null)
         {
             this.Contract.Changed += this.Contract_Changed;
@@ -66,7 +57,7 @@
             return;
         }
 
-        var result = await new ContractsApi(this.Config).AcceptContractAsync(this.Contract.Value.Id);
+        var result = await new ContractsApi(this.Configuration).AcceptContractAsync(this.Contract.Value.Id);
         if (result is null)
         {
             return;
@@ -81,14 +72,9 @@
         this.InvokeAsync(this.StateHasChanged);
     }
 
-    private void NavigationManager_LocationChanged(object? sender, LocationChangedEventArgs e)
+    protected override void DisposeCore()
     {
-        this.InvokeAsync(this.StateHasChanged);
-    }
-
-    void IDisposable.Dispose()
-    {
-        this.NavigationManager.LocationChanged -= this.NavigationManager_LocationChanged;
+        base.DisposeCore();
 
         if (this.Contract != null)
         {

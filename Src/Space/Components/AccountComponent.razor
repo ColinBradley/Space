@@ -5,14 +5,10 @@
 @using SpaceTraders.Client;
 @using SpaceTraders.Model;
 
-@implements IDisposable;
+@inherits SpaceComponentBase;
 
-@inject IConfiguration Configuration;
-@inject Configuration SpaceConfiration;
-@inject SpaceApplication Application;
 @inject ProtectedLocalStorage LocalStorage;
 @inject IJSRuntime JsRuntime;
-@inject NavigationManager NavigationManager;
 
 <div style="display:flex; flex-direction:column; gap:.5em;">
     <div style="display:flex; gap:1em;">
@@ -39,10 +35,7 @@
         <div style="display:flex; gap: 1em; position:sticky; top: 0;">
             <div>Credits: <CreditsView Credits=@this.Application.Agent.Value.Credits/></div>
             <div>
-                Home:
-                <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.Application.Agent.Value.Headquarters)>
-                    @this.Application.Agent.Value.Headquarters
-                </a>
+                Home: <LocationLinkComponent Symbol=@this.Application.Agent.Value.Headquarters/>
             </div>
         </div>
     }
@@ -51,17 +44,9 @@
 @code {
     private PlayerAccount[] mAccounts = Array.Empty<PlayerAccount>();
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-
-        this.Application.Agent.Changed += this.ApplicationAgent_Changed;
-        this.NavigationManager.LocationChanged += this.NavigationManager_LocationChanged;
-    }
-
     private string? SelectedAccountKey
     {
-        get => this.SpaceConfiration.AccessToken;
+        get => this.Configuration.AccessToken;
         set
         {
             _ = this.Application.SetPlayerAccessToken(value);
@@ -110,21 +95,5 @@
     private async Task ViewKeyButton_Click()
     {
         await this.JsRuntime.InvokeVoidAsync("console.log", $"Key for \"{mAccounts.FirstOrDefault(a => a.Key == this.SelectedAccountKey)?.Name}\": {this.SelectedAccountKey}");
-    }
-
-    private void ApplicationAgent_Changed(Observable<Agent?> observable)
-    {
-        this.InvokeAsync(this.StateHasChanged);
-    }
-
-    private void NavigationManager_LocationChanged(object? sender, LocationChangedEventArgs e)
-    {
-        this.InvokeAsync(this.StateHasChanged);
-    }
-
-    void IDisposable.Dispose()
-    {
-        this.Application.Agent.Changed -= this.ApplicationAgent_Changed;
-        this.NavigationManager.LocationChanged -= this.NavigationManager_LocationChanged;
     }
 }

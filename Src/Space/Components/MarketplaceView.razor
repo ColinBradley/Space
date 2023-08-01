@@ -5,10 +5,7 @@
 @using SpaceTraders.Client;
 @using SpaceTraders.Model;
 
-@implements IDisposable;
-
-@inject Configuration Configuration;
-@inject SpaceApplication Application;
+@inherits SpaceComponentBase;
 
 @if (mMarket is null)
 {
@@ -18,61 +15,73 @@
 <div class="panel" style="max-height:90vh">
     <h2>Marketplace</h2>
 
-    <MudTable Items=@(mMarket.TradeGoods) HorizontalScrollbar=true Dense=true RowClassFunc=@this.GetTradeRowClass OnRowClick=@this.TradeTableRow_Click T=MarketTradeGood>
-        <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<MarketTradeGood, object>(x => x.Symbol)">Name</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<MarketTradeGood, object>(x => x.PurchasePrice)">Purchase Price</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<MarketTradeGood, object>(x => x.SellPrice)">Sell Price</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<MarketTradeGood, object>(x => this.GetShipCargoCount(x.Symbol))">Owned (Current Ship)</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<MarketTradeGood, object>(x => x.Supply)">Supply</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<MarketTradeGood, object>(x => x.TradeVolume)">TradeVolume</MudTableSortLabel></MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Name">@context.Symbol</MudTd>
-            <MudTd DataLabel="PruchasePrice"><CreditsView Credits=@context.PurchasePrice /></MudTd>
-            <MudTd DataLabel="SellPrice"><CreditsView Credits=@context.SellPrice /></MudTd>
-            <MudTd DataLabel="Has">@this.GetShipCargoCount(context.Symbol)</MudTd>
-            <MudTd DataLabel="Supply">@context.Supply</MudTd>
-            <MudTd DataLabel="TradeVolume">@context.TradeVolume</MudTd>
-        </RowTemplate>
-    </MudTable>
-
-    <div>
-        <div style="display:flex; gap:1em; align-items:center;">
-            @if (this.Ship?.Value.Ship.Nav.Status is ShipNavStatus.INORBIT)
-            {
-                <button @onclick=this.DockButton_Click>Dock</button>
-            }
-            @if (mSelectedTradeGood is not null && this.Application.Agent.Value is not null && this.Ship?.Value.Ship.Nav.Status is ShipNavStatus.DOCKED)
-            {
-                var balanceAfterBuy = this.Application.Agent.Value.Credits - mSelectedTradeGood.PurchasePrice;
-                var unitCount = this.GetShipCargoCount(mSelectedTradeGood.Symbol);
-                var balanceAfterSell = this.Application.Agent.Value.Credits + mSelectedTradeGood.SellPrice;
-                var balanceAfterSellAll = this.Application.Agent.Value.Credits + mSelectedTradeGood.SellPrice * unitCount;
-                
-                <button 
-                    @onclick=this.BuyButton_Click
-                    disabled=@(balanceAfterBuy is < 0) 
-                    title=@($"Balance After: {balanceAfterBuy}")>
-                    Buy
-                </button>
-                <button @onclick=this.SellButton_Click
-                        disabled=@(unitCount is 0)
-                        title=@(unitCount is 0 ? string.Empty : $"Balance After: c{balanceAfterSell}")>
-                    Sell
-                </button>
-                <button @onclick=this.SellAllButton_Click
-                        disabled=@(unitCount is 0)
-                        title=@(unitCount is 0 ? string.Empty : $"Balance After: c{balanceAfterSellAll}")>
-                    Sell All
-                </button>
-            }
-        </div>
-    </div>
-
-    @if (mLastError is not null)
+    @if (mMarket.TradeGoods is null)
     {
-        <div style="color:red;">@mLastError</div>
+        <div>Ship is required to see goods.</div>
+    }
+    else
+    {
+        <MudTable Items=mMarket.TradeGoods HorizontalScrollbar=true Dense=true RowClassFunc=@this.GetTradeRowClass OnRowClick=@this.TradeTableRow_Click T=MarketTradeGood>
+            <HeaderContent>
+                <MudTh><MudTableSortLabel SortBy="new Func<MarketTradeGood, object>(x => x.Symbol)">Name</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<MarketTradeGood, object>(x => x.PurchasePrice)">Purchase Price</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<MarketTradeGood, object>(x => x.SellPrice)">Sell Price</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<MarketTradeGood, object>(x => this.GetShipCargoCount(x.Symbol))">Owned (Current Ship)</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<MarketTradeGood, object>(x => x.Supply)">Supply</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<MarketTradeGood, object>(x => x.TradeVolume)">TradeVolume</MudTableSortLabel></MudTh>
+            </HeaderContent>
+            <RowTemplate>
+
+                <MudTd DataLabel="Name">
+                    <span title=@(this.GetItem(context.Symbol)?.Description ?? string.Empty)>
+                        @(this.GetItem(context.Symbol)?.Name ?? context.Symbol.ToString())
+                    </span>
+                </MudTd>
+                <MudTd DataLabel="PruchasePrice"><CreditsView Credits=@context.PurchasePrice /></MudTd>
+                <MudTd DataLabel="SellPrice"><CreditsView Credits=@context.SellPrice /></MudTd>
+                <MudTd DataLabel="Has">@this.GetShipCargoCount(context.Symbol)</MudTd>
+                <MudTd DataLabel="Supply">@context.Supply</MudTd>
+                <MudTd DataLabel="TradeVolume">@context.TradeVolume</MudTd>
+            </RowTemplate>
+        </MudTable>
+
+        <div>
+            <div style="display:flex; gap:1em; align-items:center;">
+                @if (this.Application.SelectedShip.Value?.Ship.Nav.Status is ShipNavStatus.INORBIT)
+                {
+                    <button @onclick=this.DockButton_Click>Dock</button>
+                }
+                @if (mSelectedTradeGood is not null && this.Application.Agent.Value is not null && this.Application.SelectedShip.Value?.Ship.Nav.Status is ShipNavStatus.DOCKED)
+                {
+                    var balanceAfterBuy = this.Application.Agent.Value.Credits - mSelectedTradeGood.PurchasePrice;
+                    var unitCount = this.GetShipCargoCount(mSelectedTradeGood.Symbol);
+                    var balanceAfterSell = this.Application.Agent.Value.Credits + mSelectedTradeGood.SellPrice;
+                    var balanceAfterSellAll = this.Application.Agent.Value.Credits + mSelectedTradeGood.SellPrice * unitCount;
+                
+                    <button 
+                        @onclick=this.BuyButton_Click
+                        disabled=@(balanceAfterBuy is < 0) 
+                        title=@($"Balance After: {balanceAfterBuy}")>
+                        Buy
+                    </button>
+                    <button @onclick=this.SellButton_Click
+                            disabled=@(unitCount is 0)
+                            title=@(unitCount is 0 ? string.Empty : $"Balance After: c{balanceAfterSell}")>
+                        Sell
+                    </button>
+                    <button @onclick=this.SellAllButton_Click
+                            disabled=@(unitCount is 0)
+                            title=@(unitCount is 0 ? string.Empty : $"Balance After: c{balanceAfterSellAll}")>
+                        Sell All
+                    </button>
+                }
+            </div>
+        </div>
+
+        @if (mLastError is not null)
+        {
+            <div style="color:red;">@mLastError</div>
+        }
     }
 </div>
 
@@ -108,38 +117,20 @@
     private MarketTradeGood? mSelectedTradeGood;
     private string? mLastError;
 
-    [Parameter]
-    public string? WaypointSymbol { get; set; }
-
-    [Parameter]
-    public string? ShipSymbol { get; set; }
-
-    private Observable<ShipModel>? Ship => this.Application.Ships.Values?.FirstOrDefault(s => s.Value.Ship.Symbol == this.ShipSymbol);
-
-    protected override void OnInitialized()
+    protected override async void OnSelectedWaypointChanged(Waypoint? selectedWaypoint)
     {
-        base.OnInitialized();
+        base.OnSelectedWaypointChanged(selectedWaypoint);
 
-        this.Application.Agent.Changed += this.ApplicationAgent_Changed;
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        await base.OnParametersSetAsync();
-
-        if (string.IsNullOrEmpty(this.WaypointSymbol))
+        if (selectedWaypoint is null || !selectedWaypoint.Traits.Any(t => t.Symbol == WaypointTrait.SymbolEnum.MARKETPLACE))
         {
+            mMarket = null;
             return;
         }
 
-        var location = new WaypointLocation(this.WaypointSymbol);
+        var result = await new SystemsApi(this.Configuration).GetMarketAsync(selectedWaypoint.SystemSymbol, selectedWaypoint.Symbol);
+        mMarket = result.Data;
 
-        mMarket = (await new SystemsApi(this.Configuration).GetMarketAsync(location.SectorAndSystem, this.WaypointSymbol)).Data;
-    }
-
-    private void ApplicationAgent_Changed(Observable<Agent?> observable)
-    {
-        this.InvokeAsync(this.StateHasChanged);
+        await this.InvokeAsync(this.StateHasChanged);
     }
 
     private void TradeTableRow_Click(TableRowClickEventArgs<MarketTradeGood> e)
@@ -156,19 +147,19 @@
 
     private async Task DockButton_Click()
     {
-        if (this.Ship is null)
+        if (this.Application.SelectedShip.Value is null)
         {
             return;
         }
 
-        var result = await new FleetApi(this.Configuration).DockShipAsync(this.Ship.Value.Ship.Symbol);
-        this.Ship.Value.Ship.Nav = result.Data.Nav;
-        this.Ship.NotifyChanged();
+        var result = await new FleetApi(this.Configuration).DockShipAsync(this.Application.SelectedShip.Value.Ship.Symbol);
+        this.Application.SelectedShip.Value.Ship.Nav = result.Data.Nav;
+        this.Application.SelectedShip.NotifyChanged();
     }
 
     private async Task BuyButton_Click()
     {
-        if (mSelectedTradeGood is null || this.Ship is null || string.IsNullOrEmpty(this.WaypointSymbol))
+        if (mSelectedTradeGood is null || this.Application.SelectedShip.Value is null)
         {
             return;
         }
@@ -178,11 +169,11 @@
         var request = new PurchaseCargoRequest(mSelectedTradeGood.Symbol, 1);
         try
         {
-            var result = (await new FleetApi(this.Configuration).PurchaseCargoAsync(this.Ship.Value.Ship.Symbol, request)).Data;
+            var result = (await new FleetApi(this.Configuration).PurchaseCargoAsync(this.Application.SelectedShip.Value.Ship.Symbol, request)).Data;
 
             this.Application.Agent.Value = result.Agent;
-            this.Ship.Value.Ship.Cargo = result.Cargo;
-            this.Ship.NotifyChanged();
+            this.Application.SelectedShip.Value.Ship.Cargo = result.Cargo;
+            this.Application.SelectedShip.NotifyChanged();
         }
         catch (ApiException ex)
         {
@@ -207,7 +198,7 @@
 
     private async Task SellSelectedTradeGood(int units)
     {
-        if (mSelectedTradeGood is null || this.Ship is null || string.IsNullOrEmpty(this.WaypointSymbol) || units is <=0)
+        if (mSelectedTradeGood is null || this.Application.SelectedShip.Value is null || units is <=0)
         {
             return;
         }
@@ -217,11 +208,11 @@
         var request = new SellCargoRequest(mSelectedTradeGood.Symbol, units);
         try
         {
-            var result = (await new FleetApi(this.Configuration).SellCargoAsync(this.Ship.Value.Ship.Symbol, request)).Data;
+            var result = (await new FleetApi(this.Configuration).SellCargoAsync(this.Application.SelectedShip.Value.Ship.Symbol, request)).Data;
 
             this.Application.Agent.Value = result.Agent;
-            this.Ship.Value.Ship.Cargo = result.Cargo;
-            this.Ship.NotifyChanged();
+            this.Application.SelectedShip.Value.Ship.Cargo = result.Cargo;
+            this.Application.SelectedShip.NotifyChanged();
         }
         catch (ApiException e)
         {
@@ -233,10 +224,8 @@
         tradeGood.Symbol == mSelectedTradeGood?.Symbol ? "selected" : string.Empty;
 
     private int GetShipCargoCount(TradeSymbol symbol) =>
-        this.Ship?.Value.Ship.Cargo.Inventory.FirstOrDefault(i => i.Symbol == symbol)?.Units ?? 0;
+        this.Application.SelectedShip.Value?.Ship.Cargo.Inventory.FirstOrDefault(i => i.Symbol == symbol)?.Units ?? 0;
 
-    void IDisposable.Dispose()
-    {
-        this.Application.Agent.Changed -= this.ApplicationAgent_Changed;
-    }
+    private TradeGood? GetItem(TradeSymbol symbol) =>
+        mMarket?.Imports.Concat(mMarket.Exports).FirstOrDefault(e => e.Symbol == symbol);
 }
