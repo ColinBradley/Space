@@ -28,7 +28,7 @@ public class SpaceApplication
 
     public ObservableCollection<Contract> Contracts { get; } = new(Array.Empty<Contract>(), c => c.Id);
 
-    public ObservableCollection<Ship> Ships { get; } = new(Array.Empty<Ship>(), s => s.Symbol);
+    public ObservableCollection<ShipModel> Ships { get; } = new(Array.Empty<ShipModel>(), s => s.Ship.Symbol);
 
     public IEnumerable<SystemModel> KnownSystems => mSystemsBySymbol.Values.Where(s => s is not null).Select(s => s!);
 
@@ -53,7 +53,7 @@ public class SpaceApplication
         if (this.Agent.Value is null)
         {
             this.Contracts.SetValues(Array.Empty<Contract>());
-            this.Ships.SetValues(Array.Empty<Ship>());
+            this.Ships.SetValues(Array.Empty<ShipModel>());
 
             return;
         }
@@ -105,13 +105,13 @@ public class SpaceApplication
     {
         this.Ships.SetValues(
             (await new FleetApi(mConfiguration).GetMyShipsAsync())
-                ?.Data.ToArray() ??
-                Array.Empty<Ship>());
+                ?.Data.Select(s => new ShipModel(s)).ToArray() ??
+                Array.Empty<ShipModel>());
 
         // Ensure that we're aware of each ship's system
         foreach (var ship in this.Ships.Values)
         {
-            _ = await this.TryGetSystem(ship.Value.Nav.SystemSymbol);
+            _ = await this.TryGetSystem(ship.Value.Ship.Nav.SystemSymbol);
         }
     }
 

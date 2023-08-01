@@ -8,6 +8,7 @@
 
 @inject NavigationManager NavigationManager;
 @inject Configuration Configuration;
+@inject SpaceApplication Application;
 
 @{
     if (this.Ship == null)
@@ -18,48 +19,48 @@
 
 <div class="panel" style="display: grid; grid-template-columns: auto minmax(0, 1fr);">
     <div>
-        <h2>@this.Ship.Value.Symbol</h2>
+        <h2>@this.Ship.Ship.Symbol</h2>
 
-        <div title="@this.Ship.Value.Frame.Description">
-            @this.Ship.Value.Registration.Role-@this.Ship.Value.Frame.Symbol
+        <div title="@this.Ship.Ship.Frame.Description">
+            @this.Ship.Ship.Registration.Role-@this.Ship.Ship.Frame.Symbol
         </div>
-        <div>Module Slots: @this.Ship.Value.Frame.ModuleSlots</div>
-        <div>Mounting Points: @this.Ship.Value.Frame.MountingPoints</div>
-        <div>Frame Condition: @this.Ship.Value.Frame.Condition%</div>
+        <div>Module Slots: @this.Ship.Ship.Frame.ModuleSlots</div>
+        <div>Mounting Points: @this.Ship.Ship.Frame.MountingPoints</div>
+        <div>Frame Condition: @this.Ship.Ship.Frame.Condition%</div>
 
-        <div>Fuel: @this.Ship.Value.Fuel.Current / @this.Ship.Value.Fuel.Capacity</div>
-        <div title=@this.Ship.Value.Reactor.Description>Reactor: @this.Ship.Value.Reactor.Name</div>
-        <div>Reactor Power Out: @this.Ship.Value.Reactor.PowerOutput</div>
-        <div>Reactor Condition: @this.Ship.Value.Reactor.Condition%</div>
-        <div title=@this.Ship.Value.Engine.Description>Engine: @this.Ship.Value.Engine.Name</div>
-        <div>Engine Speed: @this.Ship.Value.Engine.Speed</div>
-        <div>Engine Condition: @this.Ship.Value.Engine.Condition%</div>
+        <div>Fuel: @this.Ship.Ship.Fuel.Current / @this.Ship.Ship.Fuel.Capacity</div>
+        <div title=@this.Ship.Ship.Reactor.Description>Reactor: @this.Ship.Ship.Reactor.Name</div>
+        <div>Reactor Power Out: @this.Ship.Ship.Reactor.PowerOutput</div>
+        <div>Reactor Condition: @this.Ship.Ship.Reactor.Condition%</div>
+        <div title=@this.Ship.Ship.Engine.Description>Engine: @this.Ship.Ship.Engine.Name</div>
+        <div>Engine Speed: @this.Ship.Ship.Engine.Speed</div>
+        <div>Engine Condition: @this.Ship.Ship.Engine.Condition%</div>
 
-        <div>Crew: @this.Ship.Value.Crew.Current / @this.Ship.Value.Crew.Capacity</div>
-        <div>Crew Morale: @this.Ship.Value.Crew.Morale%</div>
+        <div>Crew: @this.Ship.Ship.Crew.Current / @this.Ship.Ship.Crew.Capacity</div>
+        <div>Crew Morale: @this.Ship.Ship.Crew.Morale%</div>
         <div>
             Location:
-            <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.Ship.Value.Nav.Route.Departure.Symbol)>
-                @this.Ship.Value.Nav.Route.Departure.Symbol
+            <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.Ship.Ship.Nav.Route.Departure.Symbol)>
+                @this.Ship.Ship.Nav.Route.Departure.Symbol
             </a>
         </div>
-        <div>Status: @this.Ship.Value.Nav.Status</div>
-        @if (this.Ship.Value.Nav.Status == ShipNavStatus.INTRANSIT)
+        <div>Status: @this.Ship.Ship.Nav.Status</div>
+        @if (this.Ship.Ship.Nav.Status == ShipNavStatus.INTRANSIT)
         {
             <div>
                 To:
-                <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.Ship.Value.Nav.WaypointSymbol)>
-                    @this.Ship.Value.Nav.WaypointSymbol
+                <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.Ship.Ship.Nav.WaypointSymbol)>
+                    @this.Ship.Ship.Nav.WaypointSymbol
                 </a>
             </div>
-            <div>Arrive At: @this.Ship.Value.Nav.Route.Arrival</div>
-            <div>Flight Mode: @this.Ship.Value.Nav.FlightMode</div>
+            <div>Arrive At: @this.Ship.Ship.Nav.Route.Arrival</div>
+            <div>Flight Mode: @this.Ship.Ship.Nav.FlightMode</div>
         }
     </div>
     <div class="panel">
-        <div>Cargo: @this.Ship.Value.Cargo.Units / @this.Ship.Value.Cargo.Capacity</div>
-        <div class="panel" style="display: flex; flex-wrap: wrap; gap: 1em;">
-            @foreach (var item in this.Ship.Value.Cargo.Inventory)
+        <div>Cargo: @this.Ship.Ship.Cargo.Units / @this.Ship.Ship.Cargo.Capacity</div>
+        <div class="panel" style="flex-direction: row; flex-wrap: wrap; gap: 1em;">
+            @foreach (var item in this.Ship.Ship.Cargo.Inventory)
             {
                 <div class="item" title=@item.Description>
                     <div>@item.Name</div>
@@ -68,58 +69,82 @@
             }
         </div>
     </div>
-    <div style="display:flex; gap:1em;">
-        @if (this.Ship.Value.Nav.Status == ShipNavStatus.DOCKED)
+    <div style="display:flex; gap:1em; grid-column: span 2;">
+        @if (this.Ship.Ship.Nav.Status == ShipNavStatus.DOCKED)
         {
-            <button @onclick=this.RefuelButton_Click disabled=@(this.Ship.Value.Fuel.Current == this.Ship.Value.Fuel.Capacity)>Refuel</button>
+            <button @onclick=this.RefuelButton_Click disabled=@(this.Ship.Ship.Fuel.Current == this.Ship.Ship.Fuel.Capacity)>Refuel</button>
             <button @onclick=this.UndockButton_Click>Undock</button>
         }
 
-        @if (this.Ship.Value.Nav.Status == ShipNavStatus.INORBIT)
+        @if (this.Ship.Ship.Nav.Status == ShipNavStatus.INORBIT)
         {
             <button @onclick=this.DockButton_Click>Dock</button>
 
-            if (CanShipMine(this.Ship.Value))
+            if (CanShipMine(this.Ship.Ship))
             {
-                <button @onclick=this.ExtractResourcesButton_Click>Extract Resources</button>
+                var cooldownTimeLeft = this.Ship.CooldownTimeLeft();
+
+                <button @onclick=this.ExtractResourcesButton_Click disabled=@cooldownTimeLeft.HasValue>
+                    Extract Resources
+                    @(cooldownTimeLeft.HasValue ? cooldownTimeLeft.Value.ToString(@"hh\:mm\:ss") : string.Empty)
+                </button>
             }
         }
 
-        @if (this.Ship.Value.Nav.Status == ShipNavStatus.INORBIT &&
-        this.NavigationManager.TryGetQueryString(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, out var selectedWaypoint) &&
-        this.Ship.Value.Nav.WaypointSymbol != @selectedWaypoint)
+        @if (this.Ship.Ship.Nav.Status == ShipNavStatus.INORBIT &&
+            this.NavigationManager.TryGetQueryString(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, out var selectedWaypoint) &&
+            this.Ship.Ship.Nav.WaypointSymbol != @selectedWaypoint)
         {
             <button @onclick=this.TravelToButton_Click>Travel to @selectedWaypoint</button>
+        }
+
+        @if (!string.IsNullOrEmpty(mLastError))
+        {
+            <div style="color: red;">@mLastError</div>
         }
     </div>
 </div>
 
 <style>
     .item {
-        width: 10em;
-        height: 10em;
+        border: 1px solid var(--border-color);
+        padding: .5em;
+        text-align: center;
     }
 </style>
 
 @code {
     private string? mLastError;
+    private ShipModel? mShipModel;
 
     [Parameter]
-    public Observable<Ship>? Ship { get; set; }
+    public ShipModel? Ship { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
+        this.NavigationManager.LocationChanged += this.NavigationManager_LocationChanged;
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (mShipModel != null)
+        {
+            mShipModel.Changed -= this.Ship_Changed;
+        }
+
+        mShipModel = this.Ship;
+
         if (this.Ship != null)
         {
             this.Ship.Changed += this.Ship_Changed;
         }
-
-        this.NavigationManager.LocationChanged += this.NavigationManager_LocationChanged;
     }
 
-    private void Ship_Changed(Observable<Ship> observable)
+    private void Ship_Changed()
     {
         this.InvokeAsync(this.StateHasChanged);
     }
@@ -137,10 +162,12 @@
             return;
         }
 
-        await new FleetApi(this.Configuration)
-            .RefuelShipAsync(this.Ship.Value.Symbol);
+        var result = await new FleetApi(this.Configuration)
+            .RefuelShipAsync(this.Ship.Ship.Symbol);
 
-        await this.UpdateShip();
+        this.Application.Agent.Value = result.Data.Agent;
+        this.Ship.Ship.Fuel = result.Data.Fuel;
+        this.Ship.NotifyChanged();
     }
 
     private async Task DockButton_Click()
@@ -150,10 +177,11 @@
             return;
         }
 
-        await new FleetApi(this.Configuration)
-            .DockShipAsync(this.Ship.Value.Symbol);
+        var result = await new FleetApi(this.Configuration)
+            .DockShipAsync(this.Ship.Ship.Symbol);
 
-        await this.UpdateShip();
+        this.Ship.Ship.Nav = result.Data.Nav;
+        this.Ship.NotifyChanged();
     }
 
     private async Task UndockButton_Click()
@@ -163,10 +191,11 @@
             return;
         }
 
-        await new FleetApi(this.Configuration)
-            .OrbitShipAsync(this.Ship.Value.Symbol);
+        var result = await new FleetApi(this.Configuration)
+            .OrbitShipAsync(this.Ship.Ship.Symbol);
 
-        await this.UpdateShip();
+        this.Ship.Ship.Nav = result.Data.Nav;
+        this.Ship.NotifyChanged();
     }
 
     private async Task TravelToButton_Click()
@@ -176,10 +205,12 @@
             return;
         }
 
-        await new FleetApi(this.Configuration)
-            .NavigateShipAsync(this.Ship.Value.Symbol, new NavigateShipRequest(selectedWaypoint));
+        var result = await new FleetApi(this.Configuration)
+            .NavigateShipAsync(this.Ship.Ship.Symbol, new NavigateShipRequest(selectedWaypoint));
 
-        await this.UpdateShip();
+        this.Ship.Ship.Nav = result.Data.Nav;
+        this.Ship.Ship.Fuel = result.Data.Fuel;
+        this.Ship.NotifyChanged();
     }
 
     private async Task ExtractResourcesButton_Click()
@@ -189,31 +220,23 @@
             return;
         }
 
+        mLastError = null;
+
         try
         {
             var result = await new FleetApi(this.Configuration)
-                    .ExtractResourcesAsync(this.Ship.Value.Symbol, new ExtractResourcesRequest());
-        } 
-        catch (ApiException e) when (e.ErrorCode == 4000)
+                .ExtractResourcesAsync(this.Ship.Ship.Symbol, new ExtractResourcesRequest());
+
+            this.Ship.Ship.Cargo = result.Data.Cargo;
+            this.Ship.Cooldown = result.Data.Cooldown;
+            this.Ship.NotifyChanged();
+        }
+        catch (ApiException e)
         {
             // Not ready yet
             mLastError = e.Message;
             return;
         }
-
-        await this.UpdateShip();
-    }
-
-    private async Task UpdateShip()
-    {
-        if (this.Ship is null)
-        {
-            return;
-        }
-
-        this.Ship.Value =
-            (await new FleetApi(this.Configuration)
-                .GetMyShipAsync(this.Ship.Value.Symbol)).Data;
     }
 
     private static bool CanShipMine(Ship ship) =>

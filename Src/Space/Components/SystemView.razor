@@ -10,11 +10,11 @@
 @inject IJSRuntime JSRuntime;
 
 @{
+    this.NavigationManager.TryGetQueryString(Navigation.SELECTED_SHIP_QUERY_STRING_KEY, out var selectedShipSymbol);
     this.NavigationManager.TryGetQueryString(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, out var selectedWaypointSymbol);
     var selectedWaypoint = this.System?.Waypoints.Values.FirstOrDefault(w => w.Value.Symbol == selectedWaypointSymbol);
     var hasShipyard = selectedWaypoint?.Value.Traits.Any(t => t.Symbol == WaypointTrait.SymbolEnum.SHIPYARD) ?? false;
     var hasMarket = selectedWaypoint?.Value.Traits.Any(t => t.Symbol == WaypointTrait.SymbolEnum.MARKETPLACE || t.Symbol == WaypointTrait.SymbolEnum.BLACKMARKET) ?? false;
-
 }
 
 <div class="panel" style="display: @(this.System == null? "none": "flex"); flex-direction: column; gap: 1em;">
@@ -42,7 +42,7 @@
                 </ul>
 
                 @{
-                    var ships = this.Application.Ships.Values.Where(s => s.Value.Nav.WaypointSymbol == waypoint.Symbol).ToArray();
+                    var ships = this.Application.Ships.Values.Where(s => s.Value.Ship.Nav.WaypointSymbol == waypoint.Symbol).ToArray();
 
                     if (ships.Length > 0)
                     {
@@ -52,7 +52,7 @@
                                 @foreach (var ship in ships)
                                 {
                                     <li>
-                                        <ShipCardView Ship=@ship ShowLocation=false ShowCrew=false />
+                                        <ShipCardView ShipModel=@(ship.Value) ShowLocation=false ShowCrew=false />
                                     </li>
                                 }
                             </ul>
@@ -66,6 +66,10 @@
     @if (hasShipyard)
     {
         <ShipyardView WaypointSymbol=@selectedWaypointSymbol />
+    }
+    @if (hasMarket)
+    {
+        <MarketplaceView WaypointSymbol=@selectedWaypointSymbol ShipSymbol=@selectedShipSymbol />
     }
 
     <div class="panel">

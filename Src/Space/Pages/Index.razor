@@ -32,17 +32,17 @@
         <div style="display:flex; flex-wrap:wrap; gap:1em;">
             @foreach (var ship in this.Application.Ships.Values)
             {
-                <ShipCardView Ship=@ship />
+                <ShipCardView ShipModel=@ship.Value />
             }
         </div>
 
         @if (this.NavigationManager.TryGetQueryString(Navigation.SELECTED_SHIP_QUERY_STRING_KEY, out var selectedWaypoint))
         {
-            var ship = this.Application.Ships.Values.FirstOrDefault(s => s.Value.Symbol == selectedWaypoint);
+            var ship = this.Application.Ships.Values.FirstOrDefault(s => s.Value.Ship.Symbol == selectedWaypoint);
 
             if (ship is not null)
             {
-                <ShipDetailView Ship=@ship />
+                <ShipDetailView Ship=@ship.Value />
             }
         }
     </div>

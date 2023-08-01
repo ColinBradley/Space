@@ -8,40 +8,48 @@
 @inject NavigationManager NavigationManager;
 
 @{
-    if (this.Ship == null)
+    if (this.ShipModel == null)
     {
         return;
     }
 
     var isSelectedClass =
         this.NavigationManager.TryGetQueryString(Navigation.SELECTED_SHIP_QUERY_STRING_KEY, out var selectedShip) &&
-        selectedShip == this.Ship.Value.Registration.Name ? "selected" : null;
+        selectedShip == this.ShipModel.Ship.Registration.Name ? "selected" : null;
 }
 
 <div class="panel ship @isSelectedClass">
     <span>
-        <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_SHIP_QUERY_STRING_KEY, this.Ship.Value.Registration.Name)>
-            @this.Ship.Value.Symbol
+        <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_SHIP_QUERY_STRING_KEY, this.ShipModel.Ship.Registration.Name)>
+            @this.ShipModel.Ship.Symbol
         </a>
-        <span title="@this.Ship.Value.Frame.Description">(@this.Ship.Value.Registration.Role-@this.Ship.Value.Frame.Symbol)</span>
+        <span title="@this.ShipModel.Ship.Frame.Description">(@this.ShipModel.Ship.Registration.Role-@this.ShipModel.Ship.Frame.Symbol)</span>
     </span>
 
-    @if (this.ShowFuel && this.Ship.Value.Fuel.Capacity > 0)
+    @if (this.ShowFuel && this.ShipModel.Ship.Fuel.Capacity > 0)
     {
-        <div>Fuel: @this.Ship.Value.Fuel.Current / @this.Ship.Value.Fuel.Capacity</div>
+        <div>Fuel: @this.ShipModel.Ship.Fuel.Current / @this.ShipModel.Ship.Fuel.Capacity</div>
     }
 
-    @if (this.Ship.Value.Cargo.Capacity > 0)
+    @if (this.ShipModel.Ship.Cargo.Capacity > 0)
     {
-        <div>Cargo: @this.Ship.Value.Cargo.Units / @this.Ship.Value.Cargo.Capacity</div>
+        <div>Cargo: @this.ShipModel.Ship.Cargo.Units / @this.ShipModel.Ship.Cargo.Capacity</div>
     }
 
-    @if (this.ShowCrew && this.Ship.Value.Crew.Capacity > 0)
+    @if (this.ShowCrew && this.ShipModel.Ship.Crew.Capacity > 0)
     {
-        <div>Crew: @this.Ship.Value.Crew.Current / @this.Ship.Value.Crew.Capacity</div>
+        <div>Crew: @this.ShipModel.Ship.Crew.Current / @this.ShipModel.Ship.Crew.Capacity</div>
         if (this.ShowCrewMorale)
         {
-            <div>Crew Morale: @this.Ship.Value.Crew.Morale%</div>
+            <div>Crew Morale: @this.ShipModel.Ship.Crew.Morale%</div>
+        }
+    }
+
+    @{
+        var cooldown = this.ShipModel.CooldownTimeLeft();
+        @if (cooldown.HasValue)
+        {
+            <div>Cooldown: @cooldown.Value.ToString(@"hh\:mm\:ss")</div>
         }
     }
 
@@ -49,8 +57,8 @@
     {
         <div>
             Location:
-            <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.Ship.Value.Nav.WaypointSymbol)>
-                @this.Ship.Value.Nav.WaypointSymbol
+            <a href=@this.NavigationManager.GetUriWithQueryParameter(Navigation.SELECTED_WAYPOINT_QUERY_STRING_KEY, this.ShipModel.Ship.Nav.WaypointSymbol)>
+                @this.ShipModel.Ship.Nav.WaypointSymbol
             </a>
         </div>
     }
@@ -71,7 +79,7 @@
 
 @code {
     [Parameter]
-    public Observable<Ship>? Ship { get; set; }
+    public ShipModel? ShipModel { get; set; }
 
     [Parameter]
     public bool ShowLocation { get; set; } = true;
@@ -89,15 +97,15 @@
     {
         await base.OnInitializedAsync();
 
-        if (this.Ship != null)
+        if (this.ShipModel != null)
         {
-            this.Ship.Changed += this.Ship_Changed;
+            this.ShipModel.Changed += this.Ship_Changed;
         }
 
         this.NavigationManager.LocationChanged += this.NavigationManager_LocationChanged;
     }
 
-    private void Ship_Changed(Observable<Ship> observable)
+    private void Ship_Changed()
     {
         this.InvokeAsync(this.StateHasChanged);
     }
@@ -110,9 +118,9 @@
 
     void IDisposable.Dispose()
     {
-        if (this.Ship != null)
+        if (this.ShipModel != null)
         {
-            this.Ship.Changed -= this.Ship_Changed;
+            this.ShipModel.Changed -= this.Ship_Changed;
         }
 
         this.NavigationManager.LocationChanged -= this.NavigationManager_LocationChanged;

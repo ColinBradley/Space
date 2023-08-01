@@ -23,7 +23,12 @@ public sealed class Observable<T> where T : class?
 
             mValue = value!;
 
-            this.Changed?.Invoke(this);
+            this.NotifyChanged();
         }
+    }
+
+    public void NotifyChanged()
+    {
+        this.Changed?.Invoke(this);
     }
 }
