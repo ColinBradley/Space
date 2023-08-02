@@ -3,6 +3,7 @@
 @using SpaceTraders.Api;
 @using SpaceTraders.Client;
 @using SpaceTraders.Model;
+@using System.Collections.Concurrent;
 
 @inherits SpaceComponentBase;
 
@@ -133,21 +134,49 @@
         {
             <button @onclick=this.DockButton_Click>Dock</button>
 
-            if (CanShipMine(this.Ship.Ship))
+            if (mShipsLocation is not null)
             {
-                var cooldownTimeLeft = this.Ship.CooldownTimeLeft();
+                if (IsWaypointMinable(mShipsLocation))
+                {
+                    var cooldownTimeLeft = this.Ship.CooldownTimeLeft();
 
-                <button @onclick=this.ExtractResourcesButton_Click disabled=@cooldownTimeLeft.HasValue>
-                    Extract Resources
-                    @(cooldownTimeLeft.HasValue ? cooldownTimeLeft.Value.ToString(@"hh\:mm\:ss") : string.Empty)
-                </button>
+                    if (CanShipMine(this.Ship.Ship))
+                    {
+                        <button @onclick=this.ExtractResourcesButton_Click disabled=@cooldownTimeLeft.HasValue>
+                            Extract Resources
+                            @(cooldownTimeLeft.HasValue ? cooldownTimeLeft.Value.ToString(@"hh\:mm\:ss") : string.Empty)
+                        </button>
+                    }
+
+                    if (this.Ship.Ship.Mounts.Any(m => m.Symbol is ShipMount.SymbolEnum.SURVEYORI or ShipMount.SymbolEnum.SURVEYORII or ShipMount.SymbolEnum.SURVEYORIII))
+                    {
+                        var surveys = this.GetSurveys(mShipsLocation.Symbol);
+                        <button @onclick=this.SurveyButton_Click disabled=@cooldownTimeLeft.HasValue title=@Newtonsoft.Json.JsonConvert.SerializeObject(surveys)>
+                            Survey (@(surveys.Length) Known)
+                            @(cooldownTimeLeft.HasValue ? cooldownTimeLeft.Value.ToString(@"hh\:mm\:ss") : string.Empty)
+                        </button>
+                    }
+                }
+            }
+
+            @if (this.Application.SelectedWaypoint.Value is not null &&
+           this.Ship.Ship.Nav.WaypointSymbol != this.Application.SelectedWaypoint.Value?.Symbol)
+            {
+                <button @onclick=this.TravelToButton_Click>Travel to @this.Application.SelectedWaypoint.Value?.Symbol</button>
+            }
+
+            @if (mShipsLocation?.Type == WaypointType.JUMPGATE)
+            {
+                <button @onclick=this.UseGateButton_Click>Use Gate</button>
             }
         }
 
-        @if (this.Ship.Ship.Nav.Status == ShipNavStatus.INORBIT &&
-        this.Ship.Ship.Nav.WaypointSymbol != this.Application.SelectedWaypoint.Value?.Symbol)
+        @if (this.Ship.Ship.Modules.Any(m => m.Symbol is
+            ShipModule.SymbolEnum.FUELREFINERYI or
+            ShipModule.SymbolEnum.MICROREFINERYI or
+            ShipModule.SymbolEnum.OREREFINERYI))
         {
-            <button @onclick=this.TravelToButton_Click>Travel to @this.Application.SelectedWaypoint.Value?.Symbol</button>
+            <button @onclick=this.RefineButtion_Click>Refine</button>
         }
     </div>
 
@@ -168,13 +197,14 @@
 @code {
     private string? mLastError;
     private ShipModel? mShipModel;
+    private Waypoint? mShipsLocation;
 
     [Parameter]
     public ShipModel? Ship { get; set; }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        base.OnParametersSet();
+        await base.OnParametersSetAsync();
 
         if (mShipModel != null)
         {
@@ -186,12 +216,19 @@
         if (this.Ship != null)
         {
             this.Ship.Changed += this.Ship_Changed;
+
+            mShipsLocation = await this.Application.GetWaypoint(this.Ship.Ship.Nav.WaypointSymbol);
         }
     }
 
-    private void Ship_Changed()
+    private async void Ship_Changed()
     {
-        this.InvokeAsync(this.StateHasChanged);
+        if (this.Ship is not null)
+        {
+            mShipsLocation = await this.Application.GetWaypoint(this.Ship.Ship.Nav.WaypointSymbol);
+        }
+
+        await this.InvokeAsync(this.StateHasChanged);
     }
 
     private void NavigationManager_LocationChanged(object? sender, LocationChangedEventArgs e)
@@ -223,7 +260,7 @@
         }
 
         var result = await new FleetApi(this.Configuration)
-        .DockShipAsync(this.Ship.Ship.Symbol);
+            .DockShipAsync(this.Ship.Ship.Symbol);
 
         this.Ship.Ship.Nav = result.Data.Nav;
         this.Ship.NotifyChanged();
@@ -237,7 +274,7 @@
         }
 
         var result = await new FleetApi(this.Configuration)
-        .OrbitShipAsync(this.Ship.Ship.Symbol);
+            .OrbitShipAsync(this.Ship.Ship.Symbol);
 
         this.Ship.Ship.Nav = result.Data.Nav;
         this.Ship.NotifyChanged();
@@ -255,7 +292,7 @@
         try
         {
             var result = await new FleetApi(this.Configuration)
-            .NavigateShipAsync(this.Ship.Ship.Symbol, new NavigateShipRequest(this.Application.SelectedWaypoint.Value.Symbol));
+                .NavigateShipAsync(this.Ship.Ship.Symbol, new NavigateShipRequest(this.Application.SelectedWaypoint.Value.Symbol));
 
             this.Ship.Ship.Nav = result.Data.Nav;
             this.Ship.Ship.Fuel = result.Data.Fuel;
@@ -276,10 +313,14 @@
 
         mLastError = null;
 
+        var surveys = this.GetSurveys(this.Ship.Ship.Nav.WaypointSymbol).OrderByDescending(s => s.Size);
+
         try
         {
             var result = await new FleetApi(this.Configuration)
-            .ExtractResourcesAsync(this.Ship.Ship.Symbol, new ExtractResourcesRequest());
+                .ExtractResourcesAsync(
+                    this.Ship.Ship.Symbol,
+                    new ExtractResourcesRequest(surveys.FirstOrDefault()));
 
             this.Ship.Ship.Cargo = result.Data.Cargo;
             this.Ship.Cooldown = result.Data.Cooldown;
@@ -325,11 +366,148 @@
         }
     }
 
+    private async Task UseGateButton_Click()
+    {
+        if (this.Ship is null)
+        {
+            return;
+        }
+
+        var scanResult = await new FleetApi(this.Configuration).CreateShipSystemScanAsync(this.Ship.Ship.Symbol);
+
+        var request = new JumpShipRequest(scanResult.Data.Systems.First().Symbol);
+        var result = await new FleetApi(this.Configuration).JumpShipAsync(this.Ship.Ship.Symbol, request);
+
+        this.Ship.Ship.Nav = result.Data.Nav;
+        this.Ship.Cooldown = result.Data.Cooldown;
+    }
+
+    private static readonly ConcurrentDictionary<string, List<Survey>> sSurveysBySymbol = new();
+
+    private async Task SurveyButton_Click()
+    {
+        if (this.Ship is null)
+        {
+            return;
+        }
+
+        mLastError = null;
+
+        try
+        {
+            var result = await new FleetApi(this.Configuration).CreateSurveyAsync(this.Ship.Ship.Symbol);
+
+            foreach (var survey in result.Data.Surveys)
+            {
+                sSurveysBySymbol.AddOrUpdate(
+                    survey.Symbol,
+                    _ => new List<Survey>(new[] { survey }),
+                    (_, existing) =>
+                    {
+                        lock (existing)
+                        {
+                            existing.Add(survey);
+                        }
+
+                        return existing;
+                    }
+                );
+            }
+
+            this.Ship.Cooldown = result.Data.Cooldown;
+        }
+        catch (ApiException ex)
+        {
+            mLastError = ex.Message;
+        }
+    }
+
+    private async Task RefineButtion_Click()
+    {
+        if (this.Ship is null)
+        {
+            return;
+        }
+
+        var firstRefinable = this.Ship.Ship.Cargo.Inventory
+            .Select(GetRefineInformation)
+            .FirstOrDefault(i => i is not null && i.Value.Count > 0);
+
+        if (firstRefinable is null)
+        {
+            return;
+        }
+
+        mLastError = null;
+
+        try
+        {
+            var request = new ShipRefineRequest(firstRefinable.Value.Produce);
+            var result = await new FleetApi(this.Configuration).ShipRefineAsync(this.Ship.Ship.Symbol, request);
+
+            this.Ship.Ship.Cargo = result.Data.Cargo;
+            this.Ship.Cooldown = result.Data.Cooldown;
+        }
+        catch (ApiException ex)
+        {
+            mLastError = ex.Message;
+        }
+    }
+
+    private Survey[] GetSurveys(string waypointSymbol)
+    {
+        if (!sSurveysBySymbol.TryGetValue(waypointSymbol, out var surveys))
+        {
+            return Array.Empty<Survey>();
+        }
+
+        lock (surveys)
+        {
+            surveys.RemoveAll(s => s.Expiration <= DateTime.UtcNow);
+
+            return surveys.ToArray();
+        }
+    }
+
+    private bool CanShipMine() =>
+        this.Ship is not null && mShipsLocation is not null && CanShipMine(this.Ship.Ship) && IsWaypointMinable(mShipsLocation);
+
     private static bool CanShipMine(Ship ship) =>
-    ship.Mounts.Any(m =>
-    m.Symbol is ShipMount.SymbolEnum.MININGLASERI or
-    ShipMount.SymbolEnum.MININGLASERII or
-    ShipMount.SymbolEnum.MININGLASERIII);
+        ship.Mounts.Any(m => m.Symbol is
+            ShipMount.SymbolEnum.MININGLASERI or
+            ShipMount.SymbolEnum.MININGLASERII or
+            ShipMount.SymbolEnum.MININGLASERIII);
+
+    private static bool IsWaypointMinable(Waypoint waypoint) =>
+        waypoint.Traits.Any(t => t.Symbol is
+            WaypointTrait.SymbolEnum.MINERALDEPOSITS or
+            WaypointTrait.SymbolEnum.COMMONMETALDEPOSITS or
+            WaypointTrait.SymbolEnum.PRECIOUSMETALDEPOSITS or
+            WaypointTrait.SymbolEnum.RAREMETALDEPOSITS);
+
+    private static (int Count, ShipRefineRequest.ProduceEnum Produce)? GetRefineInformation(ShipCargoItem item)
+    {
+        ShipRefineRequest.ProduceEnum? produce = item.Symbol switch
+        {
+            TradeSymbol.IRONORE => ShipRefineRequest.ProduceEnum.IRON,
+            TradeSymbol.COPPERORE => ShipRefineRequest.ProduceEnum.COPPER,
+            TradeSymbol.SILVERORE => ShipRefineRequest.ProduceEnum.SILVER,
+            TradeSymbol.GOLDORE => ShipRefineRequest.ProduceEnum.GOLD,
+            TradeSymbol.ALUMINUMORE => ShipRefineRequest.ProduceEnum.ALUMINUM,
+            TradeSymbol.PLATINUMORE => ShipRefineRequest.ProduceEnum.PLATINUM,
+            TradeSymbol.URANITEORE => ShipRefineRequest.ProduceEnum.URANITE,
+            TradeSymbol.MERITIUMORE => ShipRefineRequest.ProduceEnum.MERITIUM,
+            TradeSymbol.HYDROCARBON => ShipRefineRequest.ProduceEnum.FUEL,
+            _ => null
+        };
+
+        if (produce is null)
+        {
+            return null;
+        }
+
+        return (item.Units / 30 * 10, produce.Value);
+    }
 
     protected override void DisposeCore()
     {

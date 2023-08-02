@@ -38,6 +38,10 @@ button {
 	position: initial; /* Undoing mud shite */
 }
 
+button:hover {
+	background-color: #FFF2;
+}
+
 button[disabled] {
 	opacity: .5;
 }

@@ -227,5 +227,5 @@
         this.Application.SelectedShip.Value?.Ship.Cargo.Inventory.FirstOrDefault(i => i.Symbol == symbol)?.Units ?? 0;
 
     private TradeGood? GetItem(TradeSymbol symbol) =>
-        mMarket?.Imports.Concat(mMarket.Exports).FirstOrDefault(e => e.Symbol == symbol);
+        mMarket?.Imports.Concat(mMarket.Exports).Concat(mMarket.Exchange).FirstOrDefault(e => e.Symbol == symbol);
 }
