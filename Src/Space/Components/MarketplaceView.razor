@@ -49,7 +49,7 @@
             <div style="display:flex; gap:1em; align-items:center;">
                 @if (this.Application.SelectedShip.Value?.Ship.Nav.Status is ShipNavStatus.INORBIT)
                 {
-                    <button @onclick=this.DockButton_Click>Dock</button>
+                    <button @onclick=this.DockButton_Click>Dock @this.Application.SelectedShip.Value?.Ship.Symbol</button>
                 }
                 @if (mSelectedTradeGood is not null && this.Application.Agent.Value is not null && this.Application.SelectedShip.Value?.Ship.Nav.Status is ShipNavStatus.DOCKED)
                 {

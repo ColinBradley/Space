@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 public static class NavigationManagerExtensions
 {
-    public static bool TryGetQueryString2(this NavigationManager navManager, string key, out string value)
+    public static bool TryGetQueryString(this NavigationManager navManager, string key, out string value)
     {
         var uri = navManager.ToAbsoluteUri(navManager.Uri);
         var values = QueryHelpers.ParseQuery(uri.Query);

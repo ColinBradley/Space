@@ -15,14 +15,14 @@
 <div class="panel" style="display: @(this.System == null? "none": "flex"); flex-direction: column; gap: 1em;">
     <h2>Waypoints</h2>
 
-    <div style="display: grid;gap: 1em;grid-auto-flow: dense;grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));">
+    <div style="display:flex; gap:1em; flex-wrap:wrap;">
         @foreach (var waypoint in this.System?.Waypoints.Values.Select(o => o.Value) ?? Array.Empty<Waypoint>())
         {
             var isSelectedClass = waypoint.Symbol == this.Application.SelectedWaypoint.Value?.Symbol ? "selected" : string.Empty;
 
             <div @onclick="() => this.Application.SetSelectedWaypoint(waypoint.Symbol)" class="waypoint panel @isSelectedClass">
                 <div class="head">
-                    <LocationLinkComponent Symbol=@waypoint.Symbol UseShortName=true/>
+                    <LocationLinkComponent Symbol=@waypoint.Symbol UseShortName=true ShowType=false/>
                     <div>@SystemModel.GetHumanName(waypoint.Type)</div>
                 </div>
 
@@ -73,6 +73,7 @@
 <style>
     .waypoint {
         gap: .5em;
+        min-width: 23ch;
     }
 
         .waypoint .head {

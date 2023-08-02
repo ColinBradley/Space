@@ -5,8 +5,11 @@ using SpaceTraders.Model;
 public class ShipModel : IEquatable<ShipModel>
 {
     private readonly Timer mUpdateTimer;
+
     private Ship mShip;
     private Cooldown? mCooldown;
+
+    private bool mIsUpdateTimerActive = false;
 
     public event Action? Changed;
 
@@ -47,7 +50,8 @@ public class ShipModel : IEquatable<ShipModel>
         set
         {
             mCooldown = value;
-            mUpdateTimer.Change(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
+
+            this.UpdateTimerState();
 
             this.NotifyChanged();
         }
@@ -63,7 +67,8 @@ public class ShipModel : IEquatable<ShipModel>
         if (mCooldown.Expiration < DateTime.UtcNow)
         {
             mCooldown = null;
-            mUpdateTimer.Change(Timeout.Infinite, Timeout.Infinite);
+
+            this.UpdateTimerState();
 
             this.NotifyChanged();
 
@@ -76,6 +81,25 @@ public class ShipModel : IEquatable<ShipModel>
     public TimeSpan? CooldownTimeLeft()
     {
         return this.Cooldown?.Expiration - DateTime.UtcNow;
+    }
+
+    public TimeSpan? ArrivalTimeLeft()
+    {
+        this.UpdateTimerState();
+
+        if (this.Ship.Nav.Status == ShipNavStatus.INTRANSIT)
+        {
+            var result = this.Ship.Nav.Route.Arrival - DateTime.UtcNow;
+            if (result >= TimeSpan.Zero)
+            {
+                return result;
+            }
+
+            this.Ship.Nav.Status = ShipNavStatus.INORBIT;
+            this.NotifyChanged();
+        }
+
+        return null;
     }
 
     public void NotifyChanged()
@@ -96,5 +120,24 @@ public class ShipModel : IEquatable<ShipModel>
     public override int GetHashCode()
     {
         return this.Ship.GetHashCode();
+    }
+
+    private void UpdateTimerState()
+    {
+        var shouldBeActive = mCooldown is not null || this.Ship.Nav.Status == ShipNavStatus.INTRANSIT;
+
+        if (shouldBeActive == mIsUpdateTimerActive)
+        {
+            return;
+        }
+
+        if (shouldBeActive)
+        {
+            mUpdateTimer.Change(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
+        }
+        else
+        {
+            mUpdateTimer.Change(Timeout.Infinite, Timeout.Infinite);
+        }
     }
 }

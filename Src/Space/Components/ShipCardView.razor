@@ -47,13 +47,19 @@
         }
     }
 
+    @{
+        var arrivingIn = this.ShipModel.ArrivalTimeLeft();
+        if (arrivingIn is not null)
+        {
+            <div>Arriving in: @arrivingIn.Value.ToString(@"hh\:mm\:ss")</div>
+        }
+    }
+
     @if (this.ShowLocation)
     {
         <div>
             Location:
-            <a @onclick="() => this.Application.SetSelectedWaypoint(this.ShipModel.Ship.Nav.WaypointSymbol)">
-                @this.ShipModel.Ship.Nav.WaypointSymbol
-            </a>
+            <LocationLinkComponent Symbol=@this.ShipModel.Ship.Nav.WaypointSymbol/>
         </div>
     }
 </div>

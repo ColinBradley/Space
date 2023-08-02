@@ -24,7 +24,7 @@
             @foreach (var delivery in this.Contract.Value.Terms.Deliver)
             {
                 <li>
-                    Deliver: @delivery.UnitsFulfilled/@delivery.UnitsRequired @delivery.TradeSymbol to <LocationLinkComponent Symbol=@delivery.DestinationSymbol/>
+                    Deliver: @delivery.UnitsFulfilled / @delivery.UnitsRequired @delivery.TradeSymbol to <LocationLinkComponent Symbol=@delivery.DestinationSymbol/>
                 </li>
             }
         </ul>

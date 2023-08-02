@@ -1,19 +1,23 @@
 using MudBlazor.Services;
-using Space.Models;
-using SpaceTraders.Client;
+using Polly;
+using RestSharp;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddScoped<Configuration>();
-builder.Services.AddScoped<SpaceApplication>();
+builder.Services.AddScoped<SpaceTraders.Client.Configuration>();
+builder.Services.AddScoped<Space.Models.SpaceApplication>();
 builder.Services.AddMudServices();
+
+SpaceTraders.Client.RetryConfiguration.AsyncRetryPolicy =
+    Policy<RestResponse>
+        .HandleResult(r => r.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+        .WaitAndRetryAsync(4, i => TimeSpan.FromSeconds(i - 1 + (Random.Shared.NextDouble() * 2)));
 
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

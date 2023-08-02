@@ -1,9 +1,14 @@
 ﻿@using Space.Models;
+@using SpaceTraders.Model;
 
 @inject SpaceApplication Application;
 
 <button @onclick="() => this.Application.SetSelectedWaypoint(this.Symbol)" class="location">
     @(this.UseShortName ? new WaypointLocation(this.Symbol).Waypoint : this.Symbol)
+    @if (this.ShowType && mWaypoint is not null)
+    {
+        <span> (@mWaypoint.Type)</span>
+    }
 </button>
 
 <style>
@@ -14,12 +19,28 @@
         border: none;
         vertical-align: top;
     }
+
 </style>
 
 @code {
+    private Waypoint? mWaypoint;
+
     [Parameter]
     public required string Symbol { get; set; }
 
     [Parameter]
     public bool UseShortName { get; set; }
+
+    [Parameter]
+    public bool ShowType { get; set; } = true;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        if (this.ShowType)
+        {
+            mWaypoint = await this.Application.GetWaypoint(this.Symbol);
+        }
+    }
 }

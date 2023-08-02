@@ -24,9 +24,18 @@ h1, h2, h3, h4, label {
 	gap: .5em;
 }
 
+ul {
+	list-style: initial;
+}
+
+li {
+	margin-left: 3ch;
+}
+
 button {
 	padding: .3em 2em;
 	border: 1px solid white;
+	position: initial; /* Undoing mud shite */
 }
 
 button[disabled] {
