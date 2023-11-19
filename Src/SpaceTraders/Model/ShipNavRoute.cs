@@ -38,17 +38,11 @@ namespace SpaceTraders.Model
         public ShipNavRoute(ShipNavRouteWaypoint? destination = default, ShipNavRouteWaypoint? departure = default, DateTime departureTime = default, DateTime arrival = default)
         {
             // to ensure "destination" is required (not null)
-            if (destination == null)
-            {
-                throw new ArgumentNullException("destination is a required property for ShipNavRoute and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(destination);
 
             this.Destination = destination;
             // to ensure "departure" is required (not null)
-            if (departure == null)
-            {
-                throw new ArgumentNullException("departure is a required property for ShipNavRoute and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(departure);
 
             this.Departure = departure;
             this.DepartureTime = departureTime;

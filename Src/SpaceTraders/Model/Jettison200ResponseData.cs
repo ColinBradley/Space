@@ -35,10 +35,7 @@ namespace SpaceTraders.Model
         public Jettison200ResponseData(ShipCargo? cargo = default)
         {
             // to ensure "cargo" is required (not null)
-            if (cargo == null)
-            {
-                throw new ArgumentNullException("cargo is a required property for Jettison200ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(cargo);
 
             this.Cargo = cargo;
         }

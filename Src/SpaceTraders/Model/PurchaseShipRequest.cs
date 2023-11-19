@@ -43,10 +43,7 @@ namespace SpaceTraders.Model
         {
             this.ShipType = shipType;
             // to ensure "waypointSymbol" is required (not null)
-            if (waypointSymbol == null)
-            {
-                throw new ArgumentNullException("waypointSymbol is a required property for PurchaseShipRequest and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(waypointSymbol);
 
             this.WaypointSymbol = waypointSymbol;
         }

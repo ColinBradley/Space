@@ -36,17 +36,11 @@ namespace SpaceTraders.Model
         public Extraction(string? shipSymbol = default, ExtractionYield? yield = default)
         {
             // to ensure "shipSymbol" is required (not null)
-            if (shipSymbol == null)
-            {
-                throw new ArgumentNullException("shipSymbol is a required property for Extraction and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(shipSymbol);
 
             this.ShipSymbol = shipSymbol;
             // to ensure "yield" is required (not null)
-            if (yield == null)
-            {
-                throw new ArgumentNullException("yield is a required property for Extraction and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(yield);
 
             this.Yield = yield;
         }

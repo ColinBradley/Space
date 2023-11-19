@@ -44,10 +44,7 @@ namespace SpaceTraders.Model
         public SystemWaypoint(string? symbol = default, WaypointType type = default, int x = default, int y = default)
         {
             // to ensure "symbol" is required (not null)
-            if (symbol == null)
-            {
-                throw new ArgumentNullException("symbol is a required property for SystemWaypoint and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(symbol);
 
             this.Symbol = symbol;
             this.Type = type;

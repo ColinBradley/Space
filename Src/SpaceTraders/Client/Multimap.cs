@@ -34,7 +34,7 @@ namespace SpaceTraders.Client
         /// </summary>
         public Multimap()
         {
-            _dictionary = new Dictionary<TKey, IList<TValue>>();
+            _dictionary = [];
         }
 
         /// <summary>

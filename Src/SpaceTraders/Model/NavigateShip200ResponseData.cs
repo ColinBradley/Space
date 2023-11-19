@@ -36,17 +36,11 @@ namespace SpaceTraders.Model
         public NavigateShip200ResponseData(ShipFuel? fuel = default, ShipNav? nav = default)
         {
             // to ensure "fuel" is required (not null)
-            if (fuel == null)
-            {
-                throw new ArgumentNullException("fuel is a required property for NavigateShip200ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(fuel);
 
             this.Fuel = fuel;
             // to ensure "nav" is required (not null)
-            if (nav == null)
-            {
-                throw new ArgumentNullException("nav is a required property for NavigateShip200ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(nav);
 
             this.Nav = nav;
         }

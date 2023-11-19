@@ -36,17 +36,11 @@ namespace SpaceTraders.Model
         public GetStatus200ResponseAnnouncementsInner(string? title = default, string? body = default)
         {
             // to ensure "title" is required (not null)
-            if (title == null)
-            {
-                throw new ArgumentNullException("title is a required property for GetStatus200ResponseAnnouncementsInner and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(title);
 
             this.Title = title;
             // to ensure "body" is required (not null)
-            if (body == null)
-            {
-                throw new ArgumentNullException("body is a required property for GetStatus200ResponseAnnouncementsInner and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(body);
 
             this.Body = body;
         }

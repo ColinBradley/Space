@@ -39,10 +39,7 @@ namespace SpaceTraders.Model
         {
             this.JumpRange = jumpRange;
             // to ensure "connectedSystems" is required (not null)
-            if (connectedSystems == null)
-            {
-                throw new ArgumentNullException("connectedSystems is a required property for JumpGate and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(connectedSystems);
 
             this.ConnectedSystems = connectedSystems;
             this.FactionSymbol = factionSymbol;

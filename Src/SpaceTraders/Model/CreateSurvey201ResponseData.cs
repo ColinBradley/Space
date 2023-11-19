@@ -37,17 +37,11 @@ namespace SpaceTraders.Model
         public CreateSurvey201ResponseData(Cooldown? cooldown = default, List<Survey>? surveys = default)
         {
             // to ensure "cooldown" is required (not null)
-            if (cooldown == null)
-            {
-                throw new ArgumentNullException("cooldown is a required property for CreateSurvey201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(cooldown);
 
             this.Cooldown = cooldown;
             // to ensure "surveys" is required (not null)
-            if (surveys == null)
-            {
-                throw new ArgumentNullException("surveys is a required property for CreateSurvey201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(surveys);
 
             this.Surveys = surveys;
         }

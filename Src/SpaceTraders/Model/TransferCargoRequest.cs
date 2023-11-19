@@ -45,10 +45,7 @@ namespace SpaceTraders.Model
             this.TradeSymbol = tradeSymbol;
             this.Units = units;
             // to ensure "shipSymbol" is required (not null)
-            if (shipSymbol == null)
-            {
-                throw new ArgumentNullException("shipSymbol is a required property for TransferCargoRequest and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(shipSymbol);
 
             this.ShipSymbol = shipSymbol;
         }

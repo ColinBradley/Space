@@ -40,25 +40,16 @@ namespace SpaceTraders.Model
         public Agent(string? accountId = default, string? symbol = default, string? headquarters = default, long credits = default, string? startingFaction = default, int shipCount = default)
         {
             // to ensure "symbol" is required (not null)
-            if (symbol == null)
-            {
-                throw new ArgumentNullException("symbol is a required property for Agent and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(symbol);
 
             this.Symbol = symbol;
             // to ensure "headquarters" is required (not null)
-            if (headquarters == null)
-            {
-                throw new ArgumentNullException("headquarters is a required property for Agent and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(headquarters);
 
             this.Headquarters = headquarters;
             this.Credits = credits;
             // to ensure "startingFaction" is required (not null)
-            if (startingFaction == null)
-            {
-                throw new ArgumentNullException("startingFaction is a required property for Agent and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(startingFaction);
 
             this.StartingFaction = startingFaction;
             this.AccountId = accountId;

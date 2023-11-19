@@ -43,17 +43,11 @@ namespace SpaceTraders.Model
         public ShipRegistration(string? name = default, string? factionSymbol = default, ShipRole role = default)
         {
             // to ensure "name" is required (not null)
-            if (name == null)
-            {
-                throw new ArgumentNullException("name is a required property for ShipRegistration and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(name);
 
             this.Name = name;
             // to ensure "factionSymbol" is required (not null)
-            if (factionSymbol == null)
-            {
-                throw new ArgumentNullException("factionSymbol is a required property for ShipRegistration and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(factionSymbol);
 
             this.FactionSymbol = factionSymbol;
             this.Role = role;

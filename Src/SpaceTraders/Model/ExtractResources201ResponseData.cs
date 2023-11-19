@@ -37,24 +37,15 @@ namespace SpaceTraders.Model
         public ExtractResources201ResponseData(Cooldown? cooldown = default, Extraction? extraction = default, ShipCargo? cargo = default)
         {
             // to ensure "cooldown" is required (not null)
-            if (cooldown == null)
-            {
-                throw new ArgumentNullException("cooldown is a required property for ExtractResources201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(cooldown);
 
             this.Cooldown = cooldown;
             // to ensure "extraction" is required (not null)
-            if (extraction == null)
-            {
-                throw new ArgumentNullException("extraction is a required property for ExtractResources201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(extraction);
 
             this.Extraction = extraction;
             // to ensure "cargo" is required (not null)
-            if (cargo == null)
-            {
-                throw new ArgumentNullException("cargo is a required property for ExtractResources201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(cargo);
 
             this.Cargo = cargo;
         }

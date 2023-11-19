@@ -35,10 +35,7 @@ namespace SpaceTraders.Model
         public ScannedShipEngine(string? symbol = default)
         {
             // to ensure "symbol" is required (not null)
-            if (symbol == null)
-            {
-                throw new ArgumentNullException("symbol is a required property for ScannedShipEngine and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(symbol);
 
             this.Symbol = symbol;
         }

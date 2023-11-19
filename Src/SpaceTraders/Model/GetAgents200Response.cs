@@ -37,17 +37,11 @@ namespace SpaceTraders.Model
         public GetAgents200Response(List<Agent>? data = default, Meta? meta = default)
         {
             // to ensure "data" is required (not null)
-            if (data == null)
-            {
-                throw new ArgumentNullException("data is a required property for GetAgents200Response and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(data);
 
             this.Data = data;
             // to ensure "meta" is required (not null)
-            if (meta == null)
-            {
-                throw new ArgumentNullException("meta is a required property for GetAgents200Response and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(meta);
 
             this.Meta = meta;
         }

@@ -37,17 +37,11 @@ namespace SpaceTraders.Model
         public DeliverContractRequest(string? shipSymbol = default, string? tradeSymbol = default, int units = default)
         {
             // to ensure "shipSymbol" is required (not null)
-            if (shipSymbol == null)
-            {
-                throw new ArgumentNullException("shipSymbol is a required property for DeliverContractRequest and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(shipSymbol);
 
             this.ShipSymbol = shipSymbol;
             // to ensure "tradeSymbol" is required (not null)
-            if (tradeSymbol == null)
-            {
-                throw new ArgumentNullException("tradeSymbol is a required property for DeliverContractRequest and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(tradeSymbol);
 
             this.TradeSymbol = tradeSymbol;
             this.Units = units;

@@ -36,17 +36,11 @@ namespace SpaceTraders.Model
         public JumpShip200ResponseData(Cooldown? cooldown = default, ShipNav? nav = default)
         {
             // to ensure "cooldown" is required (not null)
-            if (cooldown == null)
-            {
-                throw new ArgumentNullException("cooldown is a required property for JumpShip200ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(cooldown);
 
             this.Cooldown = cooldown;
             // to ensure "nav" is required (not null)
-            if (nav == null)
-            {
-                throw new ArgumentNullException("nav is a required property for JumpShip200ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(nav);
 
             this.Nav = nav;
         }

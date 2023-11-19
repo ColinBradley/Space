@@ -39,31 +39,19 @@ namespace SpaceTraders.Model
         public ShipRefine201ResponseData(ShipCargo? cargo = default, Cooldown? cooldown = default, List<ShipRefine201ResponseDataProducedInner>? produced = default, List<ShipRefine201ResponseDataProducedInner>? consumed = default)
         {
             // to ensure "cargo" is required (not null)
-            if (cargo == null)
-            {
-                throw new ArgumentNullException("cargo is a required property for ShipRefine201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(cargo);
 
             this.Cargo = cargo;
             // to ensure "cooldown" is required (not null)
-            if (cooldown == null)
-            {
-                throw new ArgumentNullException("cooldown is a required property for ShipRefine201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(cooldown);
 
             this.Cooldown = cooldown;
             // to ensure "produced" is required (not null)
-            if (produced == null)
-            {
-                throw new ArgumentNullException("produced is a required property for ShipRefine201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(produced);
 
             this.Produced = produced;
             // to ensure "consumed" is required (not null)
-            if (consumed == null)
-            {
-                throw new ArgumentNullException("consumed is a required property for ShipRefine201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(consumed);
 
             this.Consumed = consumed;
         }

@@ -35,10 +35,7 @@ namespace SpaceTraders.Model
         public GetMyShipCargo200Response(ShipCargo? data = default)
         {
             // to ensure "data" is required (not null)
-            if (data == null)
-            {
-                throw new ArgumentNullException("data is a required property for GetMyShipCargo200Response and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(data);
 
             this.Data = data;
         }

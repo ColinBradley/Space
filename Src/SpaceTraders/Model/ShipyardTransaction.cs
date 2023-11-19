@@ -39,25 +39,16 @@ namespace SpaceTraders.Model
         public ShipyardTransaction(string? waypointSymbol = default, string? shipSymbol = default, int price = default, string? agentSymbol = default, DateTime timestamp = default)
         {
             // to ensure "waypointSymbol" is required (not null)
-            if (waypointSymbol == null)
-            {
-                throw new ArgumentNullException("waypointSymbol is a required property for ShipyardTransaction and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(waypointSymbol);
 
             this.WaypointSymbol = waypointSymbol;
             // to ensure "shipSymbol" is required (not null)
-            if (shipSymbol == null)
-            {
-                throw new ArgumentNullException("shipSymbol is a required property for ShipyardTransaction and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(shipSymbol);
 
             this.ShipSymbol = shipSymbol;
             this.Price = price;
             // to ensure "agentSymbol" is required (not null)
-            if (agentSymbol == null)
-            {
-                throw new ArgumentNullException("agentSymbol is a required property for ShipyardTransaction and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(agentSymbol);
 
             this.AgentSymbol = agentSymbol;
             this.Timestamp = timestamp;

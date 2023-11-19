@@ -37,24 +37,15 @@ namespace SpaceTraders.Model
         public RefuelShip200ResponseData(Agent? agent = default, ShipFuel? fuel = default, MarketTransaction? transaction = default)
         {
             // to ensure "agent" is required (not null)
-            if (agent == null)
-            {
-                throw new ArgumentNullException("agent is a required property for RefuelShip200ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(agent);
 
             this.Agent = agent;
             // to ensure "fuel" is required (not null)
-            if (fuel == null)
-            {
-                throw new ArgumentNullException("fuel is a required property for RefuelShip200ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(fuel);
 
             this.Fuel = fuel;
             // to ensure "transaction" is required (not null)
-            if (transaction == null)
-            {
-                throw new ArgumentNullException("transaction is a required property for RefuelShip200ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(transaction);
 
             this.Transaction = transaction;
         }

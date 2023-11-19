@@ -36,17 +36,11 @@ namespace SpaceTraders.Model
         public CreateChart201ResponseData(Chart? chart = default, Waypoint? waypoint = default)
         {
             // to ensure "chart" is required (not null)
-            if (chart == null)
-            {
-                throw new ArgumentNullException("chart is a required property for CreateChart201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(chart);
 
             this.Chart = chart;
             // to ensure "waypoint" is required (not null)
-            if (waypoint == null)
-            {
-                throw new ArgumentNullException("waypoint is a required property for CreateChart201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(waypoint);
 
             this.Waypoint = waypoint;
         }

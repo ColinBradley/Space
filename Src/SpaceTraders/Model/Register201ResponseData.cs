@@ -39,38 +39,23 @@ namespace SpaceTraders.Model
         public Register201ResponseData(Agent? agent = default, Contract? contract = default, Faction? faction = default, Ship? ship = default, string? token = default)
         {
             // to ensure "agent" is required (not null)
-            if (agent == null)
-            {
-                throw new ArgumentNullException("agent is a required property for Register201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(agent);
 
             this.Agent = agent;
             // to ensure "contract" is required (not null)
-            if (contract == null)
-            {
-                throw new ArgumentNullException("contract is a required property for Register201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(contract);
 
             this.Contract = contract;
             // to ensure "faction" is required (not null)
-            if (faction == null)
-            {
-                throw new ArgumentNullException("faction is a required property for Register201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(faction);
 
             this.Faction = faction;
             // to ensure "ship" is required (not null)
-            if (ship == null)
-            {
-                throw new ArgumentNullException("ship is a required property for Register201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(ship);
 
             this.Ship = ship;
             // to ensure "token" is required (not null)
-            if (token == null)
-            {
-                throw new ArgumentNullException("token is a required property for Register201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(token);
 
             this.Token = token;
         }

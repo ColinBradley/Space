@@ -36,10 +36,7 @@ namespace SpaceTraders.Model
         public GetStatus200ResponseLeaderboardsMostSubmittedChartsInner(string? agentSymbol = default, int chartCount = default)
         {
             // to ensure "agentSymbol" is required (not null)
-            if (agentSymbol == null)
-            {
-                throw new ArgumentNullException("agentSymbol is a required property for GetStatus200ResponseLeaderboardsMostSubmittedChartsInner and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(agentSymbol);
 
             this.AgentSymbol = agentSymbol;
             this.ChartCount = chartCount;

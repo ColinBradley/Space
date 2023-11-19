@@ -37,17 +37,11 @@ namespace SpaceTraders.Model
         public GetStatus200ResponseLeaderboards(List<GetStatus200ResponseLeaderboardsMostCreditsInner>? mostCredits = default, List<GetStatus200ResponseLeaderboardsMostSubmittedChartsInner>? mostSubmittedCharts = default)
         {
             // to ensure "mostCredits" is required (not null)
-            if (mostCredits == null)
-            {
-                throw new ArgumentNullException("mostCredits is a required property for GetStatus200ResponseLeaderboards and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(mostCredits);
 
             this.MostCredits = mostCredits;
             // to ensure "mostSubmittedCharts" is required (not null)
-            if (mostSubmittedCharts == null)
-            {
-                throw new ArgumentNullException("mostSubmittedCharts is a required property for GetStatus200ResponseLeaderboards and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(mostSubmittedCharts);
 
             this.MostSubmittedCharts = mostSubmittedCharts;
         }

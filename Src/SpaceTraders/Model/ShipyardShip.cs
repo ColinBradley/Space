@@ -50,53 +50,32 @@ namespace SpaceTraders.Model
         public ShipyardShip(ShipType? type = default, string? name = default, string? description = default, int purchasePrice = default, ShipFrame? frame = default, ShipReactor? reactor = default, ShipEngine? engine = default, List<ShipModule>? modules = default, List<ShipMount>? mounts = default)
         {
             // to ensure "name" is required (not null)
-            if (name == null)
-            {
-                throw new ArgumentNullException("name is a required property for ShipyardShip and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(name);
 
             this.Name = name;
             // to ensure "description" is required (not null)
-            if (description == null)
-            {
-                throw new ArgumentNullException("description is a required property for ShipyardShip and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(description);
 
             this.Description = description;
             this.PurchasePrice = purchasePrice;
             // to ensure "frame" is required (not null)
-            if (frame == null)
-            {
-                throw new ArgumentNullException("frame is a required property for ShipyardShip and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(frame);
 
             this.Frame = frame;
             // to ensure "reactor" is required (not null)
-            if (reactor == null)
-            {
-                throw new ArgumentNullException("reactor is a required property for ShipyardShip and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(reactor);
 
             this.Reactor = reactor;
             // to ensure "engine" is required (not null)
-            if (engine == null)
-            {
-                throw new ArgumentNullException("engine is a required property for ShipyardShip and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(engine);
 
             this.Engine = engine;
             // to ensure "modules" is required (not null)
-            if (modules == null)
-            {
-                throw new ArgumentNullException("modules is a required property for ShipyardShip and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(modules);
 
             this.Modules = modules;
             // to ensure "mounts" is required (not null)
-            if (mounts == null)
-            {
-                throw new ArgumentNullException("mounts is a required property for ShipyardShip and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(mounts);
 
             this.Mounts = mounts;
             this.Type = type;

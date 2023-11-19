@@ -37,17 +37,11 @@ namespace SpaceTraders.Model
         public CreateShipWaypointScan201ResponseData(Cooldown? cooldown = default, List<ScannedWaypoint>? waypoints = default)
         {
             // to ensure "cooldown" is required (not null)
-            if (cooldown == null)
-            {
-                throw new ArgumentNullException("cooldown is a required property for CreateShipWaypointScan201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(cooldown);
 
             this.Cooldown = cooldown;
             // to ensure "waypoints" is required (not null)
-            if (waypoints == null)
-            {
-                throw new ArgumentNullException("waypoints is a required property for CreateShipWaypointScan201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(waypoints);
 
             this.Waypoints = waypoints;
         }

@@ -42,31 +42,19 @@ namespace SpaceTraders.Model
         public ScannedShip(string? symbol = default, ShipRegistration? registration = default, ShipNav? nav = default, ScannedShipFrame? frame = default, ScannedShipReactor? reactor = default, ScannedShipEngine? engine = default, List<ScannedShipMountsInner>? mounts = default)
         {
             // to ensure "symbol" is required (not null)
-            if (symbol == null)
-            {
-                throw new ArgumentNullException("symbol is a required property for ScannedShip and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(symbol);
 
             this.Symbol = symbol;
             // to ensure "registration" is required (not null)
-            if (registration == null)
-            {
-                throw new ArgumentNullException("registration is a required property for ScannedShip and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(registration);
 
             this.Registration = registration;
             // to ensure "nav" is required (not null)
-            if (nav == null)
-            {
-                throw new ArgumentNullException("nav is a required property for ScannedShip and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(nav);
 
             this.Nav = nav;
             // to ensure "engine" is required (not null)
-            if (engine == null)
-            {
-                throw new ArgumentNullException("engine is a required property for ScannedShip and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(engine);
 
             this.Engine = engine;
             this.Frame = frame;

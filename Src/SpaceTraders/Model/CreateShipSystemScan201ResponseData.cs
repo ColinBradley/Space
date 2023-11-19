@@ -37,17 +37,11 @@ namespace SpaceTraders.Model
         public CreateShipSystemScan201ResponseData(Cooldown? cooldown = default, List<ScannedSystem>? systems = default)
         {
             // to ensure "cooldown" is required (not null)
-            if (cooldown == null)
-            {
-                throw new ArgumentNullException("cooldown is a required property for CreateShipSystemScan201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(cooldown);
 
             this.Cooldown = cooldown;
             // to ensure "systems" is required (not null)
-            if (systems == null)
-            {
-                throw new ArgumentNullException("systems is a required property for CreateShipSystemScan201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(systems);
 
             this.Systems = systems;
         }

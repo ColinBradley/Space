@@ -148,12 +148,9 @@ namespace SpaceTraders.Client
         {
             if (string.IsNullOrWhiteSpace(basePath))
                 throw new ArgumentException("The provided basePath is invalid.", nameof(basePath));
-            if (defaultHeaders == null)
-                throw new ArgumentNullException(nameof(defaultHeaders));
-            if (apiKey == null)
-                throw new ArgumentNullException(nameof(apiKey));
-            if (apiKeyPrefix == null)
-                throw new ArgumentNullException(nameof(apiKeyPrefix));
+            ArgumentNullException.ThrowIfNull(defaultHeaders);
+            ArgumentNullException.ThrowIfNull(apiKey);
+            ArgumentNullException.ThrowIfNull(apiKeyPrefix);
 
             BasePath = basePath;
 
@@ -476,7 +473,7 @@ namespace SpaceTraders.Client
                 throw new InvalidOperationException($"Invalid index {index} when selecting the server. Must be less than {servers.Count}.");
             }
 
-            inputVariables ??= new Dictionary<string, string>();
+            inputVariables ??= [];
 
             IReadOnlyDictionary<string, object> server = servers[index];
             string url = (string)server["url"];
@@ -489,11 +486,11 @@ namespace SpaceTraders.Client
 
                     IReadOnlyDictionary<string, object> serverVariables = (IReadOnlyDictionary<string, object>)variable.Value;
 
-                    if (inputVariables.ContainsKey(variable.Key))
+                    if (inputVariables.TryGetValue(variable.Key, out var value))
                     {
-                        url = ((List<string>)serverVariables["enum_values"]).Contains(inputVariables[variable.Key])
-                            ? url.Replace("{" + variable.Key + "}", inputVariables[variable.Key])
-                            : throw new InvalidOperationException($"The variable `{variable.Key}` in the server URL has invalid value #{inputVariables[variable.Key]}. Must be {(List<string>)serverVariables["enum_values"]}");
+                        url = ((List<string>)serverVariables["enum_values"]).Contains(value)
+                            ? url.Replace("{" + variable.Key + "}", value)
+                            : throw new InvalidOperationException($"The variable `{variable.Key}` in the server URL has invalid value #{value}. Must be {(List<string>)serverVariables["enum_values"]}");
                     }
                     else
                     {

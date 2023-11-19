@@ -36,17 +36,11 @@ namespace SpaceTraders.Model
         public AcceptContract200ResponseData(Agent? agent = default, Contract? contract = default)
         {
             // to ensure "agent" is required (not null)
-            if (agent == null)
-            {
-                throw new ArgumentNullException("agent is a required property for AcceptContract200ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(agent);
 
             this.Agent = agent;
             // to ensure "contract" is required (not null)
-            if (contract == null)
-            {
-                throw new ArgumentNullException("contract is a required property for AcceptContract200ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(contract);
 
             this.Contract = contract;
         }

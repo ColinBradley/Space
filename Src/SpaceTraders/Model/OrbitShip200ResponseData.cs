@@ -35,10 +35,7 @@ namespace SpaceTraders.Model
         public OrbitShip200ResponseData(ShipNav? nav = default)
         {
             // to ensure "nav" is required (not null)
-            if (nav == null)
-            {
-                throw new ArgumentNullException("nav is a required property for OrbitShip200ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(nav);
 
             this.Nav = nav;
         }

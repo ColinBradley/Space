@@ -39,17 +39,11 @@ namespace SpaceTraders.Model
         public Shipyard(string? symbol = default, List<ShipyardShipTypesInner>? shipTypes = default, List<ShipyardTransaction>? transactions = default, List<ShipyardShip>? ships = default)
         {
             // to ensure "symbol" is required (not null)
-            if (symbol == null)
-            {
-                throw new ArgumentNullException("symbol is a required property for Shipyard and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(symbol);
 
             this.Symbol = symbol;
             // to ensure "shipTypes" is required (not null)
-            if (shipTypes == null)
-            {
-                throw new ArgumentNullException("shipTypes is a required property for Shipyard and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(shipTypes);
 
             this.ShipTypes = shipTypes;
             this.Transactions = transactions;

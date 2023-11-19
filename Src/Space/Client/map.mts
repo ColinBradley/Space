@@ -65,38 +65,41 @@ export function initialize(canvas: HTMLCanvasElement) {
 
 export function setWaypoints(waypoints: Waypoint[] = []) {
     const orbitalLocations = new Map<string, number>();
-
-    for (const waypoint of waypoints) {
-        let offset = 10;
-        for (const orbital of waypoint.orbitals) {
-            orbitalLocations.set(orbital.symbol, offset);
-            offset += 10;
+    try {
+        for (const waypoint of waypoints) {
+            let offset = 10;
+            for (const orbital of waypoint.orbitals) {
+                orbitalLocations.set(orbital.symbol, offset);
+                offset += 10;
+            }
         }
-    }
 
-    for (const waypoint of waypoints) {
-        const waypointMaterial = new StandardMaterial("waypointMaterial", scene);
-        waypointMaterial.diffuseColor = getWaypointColor(waypoint.type);
+        for (const waypoint of waypoints) {
+            const waypointMaterial = new StandardMaterial("waypointMaterial", scene);
+            waypointMaterial.diffuseColor = getWaypointColor(waypoint.type);
 
-        const waypointMesh = CreateSphere('sphere1', { segments: 16, diameter: getWaypointSize(waypoint.type) }, scene);
-        waypointMesh.position = new Vector3(
-            waypoint.x * 3,
-            2 + (orbitalLocations.get(waypoint.symbol) ?? 0),
-            waypoint.y * 3
-        );
-        waypointMesh.material = waypointMaterial;
+            const waypointMesh = CreateSphere('sphere1', { segments: 16, diameter: getWaypointSize(waypoint.type) }, scene);
+            waypointMesh.position = new Vector3(
+                waypoint.x * 3,
+                2 + (orbitalLocations.get(waypoint.symbol) ?? 0),
+                waypoint.y * 3
+            );
+            waypointMesh.material = waypointMaterial;
 
-        const labelPlane = CreatePlane("plane", { size: 50 });
-        labelPlane.billboardMode = Mesh.BILLBOARDMODE_ALL;
-        labelPlane.position.y = 2;
-        labelPlane.parent = waypointMesh;
+            const labelPlane = CreatePlane("plane", { size: 50 });
+            labelPlane.billboardMode = Mesh.BILLBOARDMODE_ALL;
+            labelPlane.position.y = 2;
+            labelPlane.parent = waypointMesh;
 
-        const labelTexture = AdvancedDynamicTexture.CreateForMesh(labelPlane);
-        const labelTextBlock = new TextBlock();
-        labelTextBlock.text = `${WaypointType[waypoint.type]} ${waypoint.symbol}`;
-        labelTextBlock.color = "white";
-        labelTextBlock.fontSize = "50"
-        labelTexture.addControl(labelTextBlock);
+            const labelTexture = AdvancedDynamicTexture.CreateForMesh(labelPlane);
+            const labelTextBlock = new TextBlock();
+            labelTextBlock.text = `${WaypointType[waypoint.type]} ${waypoint.symbol}`;
+            labelTextBlock.color = "white";
+            labelTextBlock.fontSize = "50"
+            labelTexture.addControl(labelTextBlock);
+        }
+    } catch (ex) {
+        console.error(ex);
     }
 }
 

@@ -36,17 +36,11 @@ namespace SpaceTraders.Model
         public GetStatus200ResponseLinksInner(string? name = default, string? url = default)
         {
             // to ensure "name" is required (not null)
-            if (name == null)
-            {
-                throw new ArgumentNullException("name is a required property for GetStatus200ResponseLinksInner and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(name);
 
             this.Name = name;
             // to ensure "url" is required (not null)
-            if (url == null)
-            {
-                throw new ArgumentNullException("url is a required property for GetStatus200ResponseLinksInner and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(url);
 
             this.Url = url;
         }

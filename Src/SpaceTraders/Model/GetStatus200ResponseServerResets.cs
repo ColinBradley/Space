@@ -36,17 +36,11 @@ namespace SpaceTraders.Model
         public GetStatus200ResponseServerResets(string? next = default, string? frequency = default)
         {
             // to ensure "next" is required (not null)
-            if (next == null)
-            {
-                throw new ArgumentNullException("next is a required property for GetStatus200ResponseServerResets and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(next);
 
             this.Next = next;
             // to ensure "frequency" is required (not null)
-            if (frequency == null)
-            {
-                throw new ArgumentNullException("frequency is a required property for GetStatus200ResponseServerResets and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(frequency);
 
             this.Frequency = frequency;
         }

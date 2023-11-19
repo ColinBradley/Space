@@ -51,24 +51,15 @@ namespace SpaceTraders.Model
         public ShipNav(string? systemSymbol = default, string? waypointSymbol = default, ShipNavRoute? route = default, ShipNavStatus status = default, ShipNavFlightMode flightMode = default)
         {
             // to ensure "systemSymbol" is required (not null)
-            if (systemSymbol == null)
-            {
-                throw new ArgumentNullException("systemSymbol is a required property for ShipNav and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(systemSymbol);
 
             this.SystemSymbol = systemSymbol;
             // to ensure "waypointSymbol" is required (not null)
-            if (waypointSymbol == null)
-            {
-                throw new ArgumentNullException("waypointSymbol is a required property for ShipNav and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(waypointSymbol);
 
             this.WaypointSymbol = waypointSymbol;
             // to ensure "route" is required (not null)
-            if (route == null)
-            {
-                throw new ArgumentNullException("route is a required property for ShipNav and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(route);
 
             this.Route = route;
             this.Status = status;

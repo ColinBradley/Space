@@ -35,355 +35,415 @@ namespace SpaceTraders.Model
             /// Enum UNCHARTED for value: UNCHARTED
             /// </summary>
             [EnumMember(Value = "UNCHARTED")]
-            UNCHARTED = 1,
+            UNCHARTED,
+
+            /// <summary>
+            /// Enum UNDERCONSTRUCTION for value: UNDER_CONSTRUCTION
+            /// </summary>
+            [EnumMember(Value = "UNDER_CONSTRUCTION")]
+            UNDERCONSTRUCTION,
 
             /// <summary>
             /// Enum MARKETPLACE for value: MARKETPLACE
             /// </summary>
             [EnumMember(Value = "MARKETPLACE")]
-            MARKETPLACE = 2,
+            MARKETPLACE,
 
             /// <summary>
             /// Enum SHIPYARD for value: SHIPYARD
             /// </summary>
             [EnumMember(Value = "SHIPYARD")]
-            SHIPYARD = 3,
+            SHIPYARD,
 
             /// <summary>
             /// Enum OUTPOST for value: OUTPOST
             /// </summary>
             [EnumMember(Value = "OUTPOST")]
-            OUTPOST = 4,
+            OUTPOST,
 
             /// <summary>
             /// Enum SCATTEREDSETTLEMENTS for value: SCATTERED_SETTLEMENTS
             /// </summary>
             [EnumMember(Value = "SCATTERED_SETTLEMENTS")]
-            SCATTEREDSETTLEMENTS = 5,
+            SCATTEREDSETTLEMENTS,
 
             /// <summary>
             /// Enum SPRAWLINGCITIES for value: SPRAWLING_CITIES
             /// </summary>
             [EnumMember(Value = "SPRAWLING_CITIES")]
-            SPRAWLINGCITIES = 6,
+            SPRAWLINGCITIES,
 
             /// <summary>
             /// Enum MEGASTRUCTURES for value: MEGA_STRUCTURES
             /// </summary>
             [EnumMember(Value = "MEGA_STRUCTURES")]
-            MEGASTRUCTURES = 7,
+            MEGASTRUCTURES,
+
+            /// <summary>
+            /// Enum PIRATEBASE for value: PIRATE_BASE
+            /// </summary>
+            [EnumMember(Value = "PIRATE_BASE")]
+            PIRATEBASE,
 
             /// <summary>
             /// Enum OVERCROWDED for value: OVERCROWDED
             /// </summary>
             [EnumMember(Value = "OVERCROWDED")]
-            OVERCROWDED = 8,
+            OVERCROWDED,
 
             /// <summary>
             /// Enum HIGHTECH for value: HIGH_TECH
             /// </summary>
             [EnumMember(Value = "HIGH_TECH")]
-            HIGHTECH = 9,
+            HIGHTECH,
 
             /// <summary>
             /// Enum CORRUPT for value: CORRUPT
             /// </summary>
             [EnumMember(Value = "CORRUPT")]
-            CORRUPT = 10,
+            CORRUPT,
 
             /// <summary>
             /// Enum BUREAUCRATIC for value: BUREAUCRATIC
             /// </summary>
             [EnumMember(Value = "BUREAUCRATIC")]
-            BUREAUCRATIC = 11,
+            BUREAUCRATIC,
 
             /// <summary>
             /// Enum TRADINGHUB for value: TRADING_HUB
             /// </summary>
             [EnumMember(Value = "TRADING_HUB")]
-            TRADINGHUB = 12,
+            TRADINGHUB,
 
             /// <summary>
             /// Enum INDUSTRIAL for value: INDUSTRIAL
             /// </summary>
             [EnumMember(Value = "INDUSTRIAL")]
-            INDUSTRIAL = 13,
+            INDUSTRIAL,
 
             /// <summary>
             /// Enum BLACKMARKET for value: BLACK_MARKET
             /// </summary>
             [EnumMember(Value = "BLACK_MARKET")]
-            BLACKMARKET = 14,
+            BLACKMARKET,
 
             /// <summary>
             /// Enum RESEARCHFACILITY for value: RESEARCH_FACILITY
             /// </summary>
             [EnumMember(Value = "RESEARCH_FACILITY")]
-            RESEARCHFACILITY = 15,
+            RESEARCHFACILITY,
 
             /// <summary>
             /// Enum MILITARYBASE for value: MILITARY_BASE
             /// </summary>
             [EnumMember(Value = "MILITARY_BASE")]
-            MILITARYBASE = 16,
+            MILITARYBASE,
 
             /// <summary>
             /// Enum SURVEILLANCEOUTPOST for value: SURVEILLANCE_OUTPOST
             /// </summary>
             [EnumMember(Value = "SURVEILLANCE_OUTPOST")]
-            SURVEILLANCEOUTPOST = 17,
+            SURVEILLANCEOUTPOST,
 
             /// <summary>
             /// Enum EXPLORATIONOUTPOST for value: EXPLORATION_OUTPOST
             /// </summary>
             [EnumMember(Value = "EXPLORATION_OUTPOST")]
-            EXPLORATIONOUTPOST = 18,
+            EXPLORATIONOUTPOST,
 
             /// <summary>
             /// Enum MINERALDEPOSITS for value: MINERAL_DEPOSITS
             /// </summary>
             [EnumMember(Value = "MINERAL_DEPOSITS")]
-            MINERALDEPOSITS = 19,
+            MINERALDEPOSITS,
 
             /// <summary>
             /// Enum COMMONMETALDEPOSITS for value: COMMON_METAL_DEPOSITS
             /// </summary>
             [EnumMember(Value = "COMMON_METAL_DEPOSITS")]
-            COMMONMETALDEPOSITS = 20,
+            COMMONMETALDEPOSITS,
 
             /// <summary>
             /// Enum PRECIOUSMETALDEPOSITS for value: PRECIOUS_METAL_DEPOSITS
             /// </summary>
             [EnumMember(Value = "PRECIOUS_METAL_DEPOSITS")]
-            PRECIOUSMETALDEPOSITS = 21,
+            PRECIOUSMETALDEPOSITS,
 
             /// <summary>
             /// Enum RAREMETALDEPOSITS for value: RARE_METAL_DEPOSITS
             /// </summary>
             [EnumMember(Value = "RARE_METAL_DEPOSITS")]
-            RAREMETALDEPOSITS = 22,
+            RAREMETALDEPOSITS,
 
             /// <summary>
             /// Enum METHANEPOOLS for value: METHANE_POOLS
             /// </summary>
             [EnumMember(Value = "METHANE_POOLS")]
-            METHANEPOOLS = 23,
+            METHANEPOOLS,
 
             /// <summary>
             /// Enum ICECRYSTALS for value: ICE_CRYSTALS
             /// </summary>
             [EnumMember(Value = "ICE_CRYSTALS")]
-            ICECRYSTALS = 24,
+            ICECRYSTALS,
 
             /// <summary>
             /// Enum EXPLOSIVEGASES for value: EXPLOSIVE_GASES
             /// </summary>
             [EnumMember(Value = "EXPLOSIVE_GASES")]
-            EXPLOSIVEGASES = 25,
+            EXPLOSIVEGASES,
 
             /// <summary>
             /// Enum STRONGMAGNETOSPHERE for value: STRONG_MAGNETOSPHERE
             /// </summary>
             [EnumMember(Value = "STRONG_MAGNETOSPHERE")]
-            STRONGMAGNETOSPHERE = 26,
+            STRONGMAGNETOSPHERE,
 
             /// <summary>
             /// Enum VIBRANTAURORAS for value: VIBRANT_AURORAS
             /// </summary>
             [EnumMember(Value = "VIBRANT_AURORAS")]
-            VIBRANTAURORAS = 27,
+            VIBRANTAURORAS,
 
             /// <summary>
             /// Enum SALTFLATS for value: SALT_FLATS
             /// </summary>
             [EnumMember(Value = "SALT_FLATS")]
-            SALTFLATS = 28,
+            SALTFLATS,
 
             /// <summary>
             /// Enum CANYONS for value: CANYONS
             /// </summary>
             [EnumMember(Value = "CANYONS")]
-            CANYONS = 29,
+            CANYONS,
 
             /// <summary>
             /// Enum PERPETUALDAYLIGHT for value: PERPETUAL_DAYLIGHT
             /// </summary>
             [EnumMember(Value = "PERPETUAL_DAYLIGHT")]
-            PERPETUALDAYLIGHT = 30,
+            PERPETUALDAYLIGHT,
 
             /// <summary>
             /// Enum PERPETUALOVERCAST for value: PERPETUAL_OVERCAST
             /// </summary>
             [EnumMember(Value = "PERPETUAL_OVERCAST")]
-            PERPETUALOVERCAST = 31,
+            PERPETUALOVERCAST,
 
             /// <summary>
             /// Enum DRYSEABEDS for value: DRY_SEABEDS
             /// </summary>
             [EnumMember(Value = "DRY_SEABEDS")]
-            DRYSEABEDS = 32,
+            DRYSEABEDS,
 
             /// <summary>
             /// Enum MAGMASEAS for value: MAGMA_SEAS
             /// </summary>
             [EnumMember(Value = "MAGMA_SEAS")]
-            MAGMASEAS = 33,
+            MAGMASEAS,
 
             /// <summary>
             /// Enum SUPERVOLCANOES for value: SUPERVOLCANOES
             /// </summary>
             [EnumMember(Value = "SUPERVOLCANOES")]
-            SUPERVOLCANOES = 34,
+            SUPERVOLCANOES,
 
             /// <summary>
             /// Enum ASHCLOUDS for value: ASH_CLOUDS
             /// </summary>
             [EnumMember(Value = "ASH_CLOUDS")]
-            ASHCLOUDS = 35,
+            ASHCLOUDS,
 
             /// <summary>
             /// Enum VASTRUINS for value: VAST_RUINS
             /// </summary>
             [EnumMember(Value = "VAST_RUINS")]
-            VASTRUINS = 36,
+            VASTRUINS,
 
             /// <summary>
             /// Enum MUTATEDFLORA for value: MUTATED_FLORA
             /// </summary>
             [EnumMember(Value = "MUTATED_FLORA")]
-            MUTATEDFLORA = 37,
+            MUTATEDFLORA,
 
             /// <summary>
             /// Enum TERRAFORMED for value: TERRAFORMED
             /// </summary>
             [EnumMember(Value = "TERRAFORMED")]
-            TERRAFORMED = 38,
+            TERRAFORMED,
 
             /// <summary>
             /// Enum EXTREMETEMPERATURES for value: EXTREME_TEMPERATURES
             /// </summary>
             [EnumMember(Value = "EXTREME_TEMPERATURES")]
-            EXTREMETEMPERATURES = 39,
+            EXTREMETEMPERATURES,
 
             /// <summary>
             /// Enum EXTREMEPRESSURE for value: EXTREME_PRESSURE
             /// </summary>
             [EnumMember(Value = "EXTREME_PRESSURE")]
-            EXTREMEPRESSURE = 40,
+            EXTREMEPRESSURE,
 
             /// <summary>
             /// Enum DIVERSELIFE for value: DIVERSE_LIFE
             /// </summary>
             [EnumMember(Value = "DIVERSE_LIFE")]
-            DIVERSELIFE = 41,
+            DIVERSELIFE,
 
             /// <summary>
             /// Enum SCARCELIFE for value: SCARCE_LIFE
             /// </summary>
             [EnumMember(Value = "SCARCE_LIFE")]
-            SCARCELIFE = 42,
+            SCARCELIFE,
 
             /// <summary>
             /// Enum FOSSILS for value: FOSSILS
             /// </summary>
             [EnumMember(Value = "FOSSILS")]
-            FOSSILS = 43,
+            FOSSILS,
 
             /// <summary>
             /// Enum WEAKGRAVITY for value: WEAK_GRAVITY
             /// </summary>
             [EnumMember(Value = "WEAK_GRAVITY")]
-            WEAKGRAVITY = 44,
+            WEAKGRAVITY,
 
             /// <summary>
             /// Enum STRONGGRAVITY for value: STRONG_GRAVITY
             /// </summary>
             [EnumMember(Value = "STRONG_GRAVITY")]
-            STRONGGRAVITY = 45,
+            STRONGGRAVITY,
 
             /// <summary>
             /// Enum CRUSHINGGRAVITY for value: CRUSHING_GRAVITY
             /// </summary>
             [EnumMember(Value = "CRUSHING_GRAVITY")]
-            CRUSHINGGRAVITY = 46,
+            CRUSHINGGRAVITY,
 
             /// <summary>
             /// Enum TOXICATMOSPHERE for value: TOXIC_ATMOSPHERE
             /// </summary>
             [EnumMember(Value = "TOXIC_ATMOSPHERE")]
-            TOXICATMOSPHERE = 47,
+            TOXICATMOSPHERE,
 
             /// <summary>
             /// Enum CORROSIVEATMOSPHERE for value: CORROSIVE_ATMOSPHERE
             /// </summary>
             [EnumMember(Value = "CORROSIVE_ATMOSPHERE")]
-            CORROSIVEATMOSPHERE = 48,
+            CORROSIVEATMOSPHERE,
 
             /// <summary>
             /// Enum BREATHABLEATMOSPHERE for value: BREATHABLE_ATMOSPHERE
             /// </summary>
             [EnumMember(Value = "BREATHABLE_ATMOSPHERE")]
-            BREATHABLEATMOSPHERE = 49,
+            BREATHABLEATMOSPHERE,
+
+            /// <summary>
+            /// Enum THINATMOSPHERE for value: THIN_ATMOSPHERE
+            /// </summary>
+            [EnumMember(Value = "THIN_ATMOSPHERE")]
+            THINATMOSPHERE,
 
             /// <summary>
             /// Enum JOVIAN for value: JOVIAN
             /// </summary>
             [EnumMember(Value = "JOVIAN")]
-            JOVIAN = 50,
+            JOVIAN,
 
             /// <summary>
             /// Enum ROCKY for value: ROCKY
             /// </summary>
             [EnumMember(Value = "ROCKY")]
-            ROCKY = 51,
+            ROCKY,
 
             /// <summary>
             /// Enum VOLCANIC for value: VOLCANIC
             /// </summary>
             [EnumMember(Value = "VOLCANIC")]
-            VOLCANIC = 52,
+            VOLCANIC,
 
             /// <summary>
             /// Enum FROZEN for value: FROZEN
             /// </summary>
             [EnumMember(Value = "FROZEN")]
-            FROZEN = 53,
+            FROZEN,
 
             /// <summary>
             /// Enum SWAMP for value: SWAMP
             /// </summary>
             [EnumMember(Value = "SWAMP")]
-            SWAMP = 54,
+            SWAMP,
 
             /// <summary>
             /// Enum BARREN for value: BARREN
             /// </summary>
             [EnumMember(Value = "BARREN")]
-            BARREN = 55,
+            BARREN,
 
             /// <summary>
             /// Enum TEMPERATE for value: TEMPERATE
             /// </summary>
             [EnumMember(Value = "TEMPERATE")]
-            TEMPERATE = 56,
+            TEMPERATE,
 
             /// <summary>
             /// Enum JUNGLE for value: JUNGLE
             /// </summary>
             [EnumMember(Value = "JUNGLE")]
-            JUNGLE = 57,
+            JUNGLE,
 
             /// <summary>
             /// Enum OCEAN for value: OCEAN
             /// </summary>
             [EnumMember(Value = "OCEAN")]
-            OCEAN = 58,
+            OCEAN,
+
+            /// <summary>
+            /// Enum RADIOACTIVE for value: RADIOACTIVE
+            /// </summary>
+            [EnumMember(Value = "RADIOACTIVE")]
+            RADIOACTIVE,
+
+            /// <summary>
+            /// Enum MICROGRAVITYANOMALIES for value: MICRO_GRAVITY_ANOMALIES
+            /// </summary>
+            [EnumMember(Value = "MICRO_GRAVITY_ANOMALIES")]
+            MICROGRAVITYANOMALIES,
+
+            /// <summary>
+            /// Enum DEBRISCLUSTER for value: DEBRIS_CLUSTER
+            /// </summary>
+            [EnumMember(Value = "DEBRIS_CLUSTER")]
+            DEBRISCLUSTER,
+
+            /// <summary>
+            /// Enum DEEPCRATERS for value: DEEP_CRATERS
+            /// </summary>
+            [EnumMember(Value = "DEEP_CRATERS")]
+            DEEPCRATERS,
+
+            /// <summary>
+            /// Enum SHALLOWCRATERS for value: SHALLOW_CRATERS
+            /// </summary>
+            [EnumMember(Value = "SHALLOW_CRATERS")]
+            SHALLOWCRATERS,
+
+            /// <summary>
+            /// Enum UNSTABLECOMPOSITION for value: UNSTABLE_COMPOSITION
+            /// </summary>
+            [EnumMember(Value = "UNSTABLE_COMPOSITION")]
+            UNSTABLECOMPOSITION,
+
+            /// <summary>
+            /// Enum HOLLOWEDINTERIOR for value: HOLLOWED_INTERIOR
+            /// </summary>
+            [EnumMember(Value = "HOLLOWED_INTERIOR")]
+            HOLLOWEDINTERIOR,
 
             /// <summary>
             /// Enum STRIPPED for value: STRIPPED
             /// </summary>
             [EnumMember(Value = "STRIPPED")]
-            STRIPPED = 59
+            STRIPPED
         }
 
         /// <summary>
@@ -407,17 +467,11 @@ namespace SpaceTraders.Model
         {
             this.Symbol = symbol;
             // to ensure "name" is required (not null)
-            if (name == null)
-            {
-                throw new ArgumentNullException("name is a required property for WaypointTrait and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(name);
 
             this.Name = name;
             // to ensure "description" is required (not null)
-            if (description == null)
-            {
-                throw new ArgumentNullException("description is a required property for WaypointTrait and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(description);
 
             this.Description = description;
         }

@@ -35,10 +35,7 @@ namespace SpaceTraders.Model
         public CreateSurvey201Response(CreateSurvey201ResponseData? data = default)
         {
             // to ensure "data" is required (not null)
-            if (data == null)
-            {
-                throw new ArgumentNullException("data is a required property for CreateSurvey201Response and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(data);
 
             this.Data = data;
         }

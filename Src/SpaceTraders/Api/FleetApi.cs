@@ -1479,7 +1479,7 @@ namespace SpaceTraders.Api
         /// <returns></returns>
         public FleetApi(Configuration configuration)
         {
-            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+            ArgumentNullException.ThrowIfNull(configuration);
 
             this.Configuration = SpaceTraders.Client.Configuration.MergeConfigurations(
                 SpaceTraders.Client.GlobalConfiguration.Instance,
@@ -1499,9 +1499,9 @@ namespace SpaceTraders.Api
         /// <param name="configuration">The configuration object.</param>
         public FleetApi(ISynchronousClient client, IAsynchronousClient asyncClient, IReadableConfiguration configuration)
         {
-            if (client == null) throw new ArgumentNullException(nameof(client));
-            if (asyncClient == null) throw new ArgumentNullException(nameof(asyncClient));
-            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+            ArgumentNullException.ThrowIfNull(client);
+            ArgumentNullException.ThrowIfNull(asyncClient);
+            ArgumentNullException.ThrowIfNull(configuration);
 
             this.Client = client;
             this.AsynchronousClient = asyncClient;
@@ -1581,12 +1581,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -1658,12 +1658,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -1734,12 +1734,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -1811,12 +1811,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -1887,12 +1887,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -1964,12 +1964,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -2040,12 +2040,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -2117,12 +2117,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -2193,12 +2193,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -2270,12 +2270,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -2346,12 +2346,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -2423,12 +2423,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -2501,14 +2501,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -2583,14 +2583,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -2662,12 +2662,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -2739,12 +2739,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -2815,12 +2815,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -2892,12 +2892,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -2968,12 +2968,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -3045,12 +3045,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -3117,12 +3117,12 @@ namespace SpaceTraders.Api
         {
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -3199,12 +3199,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -3283,12 +3283,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -3360,12 +3360,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -3436,12 +3436,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -3513,12 +3513,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -3591,14 +3591,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -3673,14 +3673,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -3754,14 +3754,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -3836,14 +3836,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -3917,14 +3917,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -3999,14 +3999,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -4080,14 +4080,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -4162,14 +4162,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -4241,12 +4241,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -4318,12 +4318,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -4394,12 +4394,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -4471,12 +4471,12 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = Array.Empty<string>();
+            string[] _contentTypes = [];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -4549,14 +4549,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -4631,14 +4631,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -4712,14 +4712,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -4794,14 +4794,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -4867,14 +4867,14 @@ namespace SpaceTraders.Api
         {
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -4941,14 +4941,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -5021,14 +5021,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -5103,14 +5103,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -5184,14 +5184,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -5266,14 +5266,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -5347,14 +5347,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -5429,14 +5429,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -5510,14 +5510,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -5592,14 +5592,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -5673,14 +5673,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -5755,14 +5755,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -5836,14 +5836,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)
@@ -5918,14 +5918,14 @@ namespace SpaceTraders.Api
 
             RequestOptions localVarRequestOptions = new RequestOptions();
 
-            string[] _contentTypes = new string[] {
+            string[] _contentTypes = [
                 "application/json"
-            };
+            ];
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] _accepts = [
                 "application/json"
-            };
+            ];
 
             var localVarContentType = SpaceTraders.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null)

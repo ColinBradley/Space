@@ -35,10 +35,7 @@ namespace SpaceTraders.Model
         public JumpShipRequest(string? systemSymbol = default)
         {
             // to ensure "systemSymbol" is required (not null)
-            if (systemSymbol == null)
-            {
-                throw new ArgumentNullException("systemSymbol is a required property for JumpShipRequest and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(systemSymbol);
 
             this.SystemSymbol = systemSymbol;
         }

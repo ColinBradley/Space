@@ -36,17 +36,11 @@ namespace SpaceTraders.Model
         public DeliverContract200ResponseData(Contract? contract = default, ShipCargo? cargo = default)
         {
             // to ensure "contract" is required (not null)
-            if (contract == null)
-            {
-                throw new ArgumentNullException("contract is a required property for DeliverContract200ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(contract);
 
             this.Contract = contract;
             // to ensure "cargo" is required (not null)
-            if (cargo == null)
-            {
-                throw new ArgumentNullException("cargo is a required property for DeliverContract200ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(cargo);
 
             this.Cargo = cargo;
         }

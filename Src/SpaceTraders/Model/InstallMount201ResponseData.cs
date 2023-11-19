@@ -39,31 +39,19 @@ namespace SpaceTraders.Model
         public InstallMount201ResponseData(Agent? agent = default, List<ShipMount>? mounts = default, ShipCargo? cargo = default, ShipModificationTransaction? transaction = default)
         {
             // to ensure "agent" is required (not null)
-            if (agent == null)
-            {
-                throw new ArgumentNullException("agent is a required property for InstallMount201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(agent);
 
             this.Agent = agent;
             // to ensure "mounts" is required (not null)
-            if (mounts == null)
-            {
-                throw new ArgumentNullException("mounts is a required property for InstallMount201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(mounts);
 
             this.Mounts = mounts;
             // to ensure "cargo" is required (not null)
-            if (cargo == null)
-            {
-                throw new ArgumentNullException("cargo is a required property for InstallMount201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(cargo);
 
             this.Cargo = cargo;
             // to ensure "transaction" is required (not null)
-            if (transaction == null)
-            {
-                throw new ArgumentNullException("transaction is a required property for InstallMount201ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(transaction);
 
             this.Transaction = transaction;
         }

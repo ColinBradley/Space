@@ -238,17 +238,11 @@ namespace SpaceTraders.Model
         {
             this.Symbol = symbol;
             // to ensure "name" is required (not null)
-            if (name == null)
-            {
-                throw new ArgumentNullException("name is a required property for ShipMount and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(name);
 
             this.Name = name;
             // to ensure "requirements" is required (not null)
-            if (requirements == null)
-            {
-                throw new ArgumentNullException("requirements is a required property for ShipMount and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(requirements);
 
             this.Requirements = requirements;
             this.Description = description;

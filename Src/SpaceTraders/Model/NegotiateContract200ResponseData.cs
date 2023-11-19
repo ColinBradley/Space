@@ -35,10 +35,7 @@ namespace SpaceTraders.Model
         public NegotiateContract200ResponseData(Contract? contract = default)
         {
             // to ensure "contract" is required (not null)
-            if (contract == null)
-            {
-                throw new ArgumentNullException("contract is a required property for NegotiateContract200ResponseData and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(contract);
 
             this.Contract = contract;
         }

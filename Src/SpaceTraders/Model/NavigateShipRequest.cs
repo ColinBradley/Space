@@ -35,10 +35,7 @@ namespace SpaceTraders.Model
         public NavigateShipRequest(string? waypointSymbol = default)
         {
             // to ensure "waypointSymbol" is required (not null)
-            if (waypointSymbol == null)
-            {
-                throw new ArgumentNullException("waypointSymbol is a required property for NavigateShipRequest and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(waypointSymbol);
 
             this.WaypointSymbol = waypointSymbol;
         }

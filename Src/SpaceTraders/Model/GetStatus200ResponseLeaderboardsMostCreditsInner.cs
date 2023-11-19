@@ -36,10 +36,7 @@ namespace SpaceTraders.Model
         public GetStatus200ResponseLeaderboardsMostCreditsInner(string? agentSymbol = default, long credits = default)
         {
             // to ensure "agentSymbol" is required (not null)
-            if (agentSymbol == null)
-            {
-                throw new ArgumentNullException("agentSymbol is a required property for GetStatus200ResponseLeaderboardsMostCreditsInner and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(agentSymbol);
 
             this.AgentSymbol = agentSymbol;
             this.Credits = credits;

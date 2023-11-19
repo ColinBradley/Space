@@ -50,34 +50,22 @@ namespace SpaceTraders.Model
         public ScannedWaypoint(string? symbol = default, WaypointType type = default, string? systemSymbol = default, int x = default, int y = default, List<WaypointOrbital>? orbitals = default, WaypointFaction? faction = default, List<WaypointTrait>? traits = default, Chart? chart = default)
         {
             // to ensure "symbol" is required (not null)
-            if (symbol == null)
-            {
-                throw new ArgumentNullException("symbol is a required property for ScannedWaypoint and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(symbol);
 
             this.Symbol = symbol;
             this.Type = type;
             // to ensure "systemSymbol" is required (not null)
-            if (systemSymbol == null)
-            {
-                throw new ArgumentNullException("systemSymbol is a required property for ScannedWaypoint and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(systemSymbol);
 
             this.SystemSymbol = systemSymbol;
             this.X = x;
             this.Y = y;
             // to ensure "orbitals" is required (not null)
-            if (orbitals == null)
-            {
-                throw new ArgumentNullException("orbitals is a required property for ScannedWaypoint and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(orbitals);
 
             this.Orbitals = orbitals;
             // to ensure "traits" is required (not null)
-            if (traits == null)
-            {
-                throw new ArgumentNullException("traits is a required property for ScannedWaypoint and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(traits);
 
             this.Traits = traits;
             this.Faction = faction;

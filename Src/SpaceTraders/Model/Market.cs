@@ -41,31 +41,19 @@ namespace SpaceTraders.Model
         public Market(string? symbol = default, List<TradeGood>? exports = default, List<TradeGood>? imports = default, List<TradeGood>? exchange = default, List<MarketTransaction>? transactions = default, List<MarketTradeGood>? tradeGoods = default)
         {
             // to ensure "symbol" is required (not null)
-            if (symbol == null)
-            {
-                throw new ArgumentNullException("symbol is a required property for Market and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(symbol);
 
             this.Symbol = symbol;
             // to ensure "exports" is required (not null)
-            if (exports == null)
-            {
-                throw new ArgumentNullException("exports is a required property for Market and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(exports);
 
             this.Exports = exports;
             // to ensure "imports" is required (not null)
-            if (imports == null)
-            {
-                throw new ArgumentNullException("imports is a required property for Market and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(imports);
 
             this.Imports = imports;
             // to ensure "exchange" is required (not null)
-            if (exchange == null)
-            {
-                throw new ArgumentNullException("exchange is a required property for Market and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(exchange);
 
             this.Exchange = exchange;
             this.Transactions = transactions;

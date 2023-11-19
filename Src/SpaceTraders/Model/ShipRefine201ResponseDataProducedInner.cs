@@ -36,10 +36,7 @@ namespace SpaceTraders.Model
         public ShipRefine201ResponseDataProducedInner(string? tradeSymbol = default, int units = default)
         {
             // to ensure "tradeSymbol" is required (not null)
-            if (tradeSymbol == null)
-            {
-                throw new ArgumentNullException("tradeSymbol is a required property for ShipRefine201ResponseDataProducedInner and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(tradeSymbol);
 
             this.TradeSymbol = tradeSymbol;
             this.Units = units;

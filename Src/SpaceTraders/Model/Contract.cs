@@ -74,25 +74,16 @@ namespace SpaceTraders.Model
         public Contract(string? id = default, string? factionSymbol = default, TypeEnum type = default, ContractTerms? terms = default, bool accepted = false, bool fulfilled = false, DateTime deadlineToAccept = default)
         {
             // to ensure "id" is required (not null)
-            if (id == null)
-            {
-                throw new ArgumentNullException("id is a required property for Contract and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(id);
 
             this.Id = id;
             // to ensure "factionSymbol" is required (not null)
-            if (factionSymbol == null)
-            {
-                throw new ArgumentNullException("factionSymbol is a required property for Contract and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(factionSymbol);
 
             this.FactionSymbol = factionSymbol;
             this.Type = type;
             // to ensure "terms" is required (not null)
-            if (terms == null)
-            {
-                throw new ArgumentNullException("terms is a required property for Contract and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(terms);
 
             this.Terms = terms;
             this.Accepted = accepted;

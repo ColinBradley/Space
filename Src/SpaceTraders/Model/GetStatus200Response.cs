@@ -44,66 +44,39 @@ namespace SpaceTraders.Model
         public GetStatus200Response(string? status = default, string? varVersion = default, string? resetDate = default, string? description = default, GetStatus200ResponseStats? stats = default, GetStatus200ResponseLeaderboards? leaderboards = default, GetStatus200ResponseServerResets? serverResets = default, List<GetStatus200ResponseAnnouncementsInner>? announcements = default, List<GetStatus200ResponseLinksInner>? links = default)
         {
             // to ensure "status" is required (not null)
-            if (status == null)
-            {
-                throw new ArgumentNullException("status is a required property for GetStatus200Response and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(status);
 
             this.Status = status;
             // to ensure "varVersion" is required (not null)
-            if (varVersion == null)
-            {
-                throw new ArgumentNullException("varVersion is a required property for GetStatus200Response and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(varVersion);
 
             this.VarVersion = varVersion;
             // to ensure "resetDate" is required (not null)
-            if (resetDate == null)
-            {
-                throw new ArgumentNullException("resetDate is a required property for GetStatus200Response and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(resetDate);
 
             this.ResetDate = resetDate;
             // to ensure "description" is required (not null)
-            if (description == null)
-            {
-                throw new ArgumentNullException("description is a required property for GetStatus200Response and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(description);
 
             this.Description = description;
             // to ensure "stats" is required (not null)
-            if (stats == null)
-            {
-                throw new ArgumentNullException("stats is a required property for GetStatus200Response and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(stats);
 
             this.Stats = stats;
             // to ensure "leaderboards" is required (not null)
-            if (leaderboards == null)
-            {
-                throw new ArgumentNullException("leaderboards is a required property for GetStatus200Response and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(leaderboards);
 
             this.Leaderboards = leaderboards;
             // to ensure "serverResets" is required (not null)
-            if (serverResets == null)
-            {
-                throw new ArgumentNullException("serverResets is a required property for GetStatus200Response and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(serverResets);
 
             this.ServerResets = serverResets;
             // to ensure "announcements" is required (not null)
-            if (announcements == null)
-            {
-                throw new ArgumentNullException("announcements is a required property for GetStatus200Response and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(announcements);
 
             this.Announcements = announcements;
             // to ensure "links" is required (not null)
-            if (links == null)
-            {
-                throw new ArgumentNullException("links is a required property for GetStatus200Response and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(links);
 
             this.Links = links;
         }

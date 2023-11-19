@@ -40,10 +40,7 @@ namespace SpaceTraders.Model
             this.Capacity = capacity;
             this.Units = units;
             // to ensure "inventory" is required (not null)
-            if (inventory == null)
-            {
-                throw new ArgumentNullException("inventory is a required property for ShipCargo and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(inventory);
 
             this.Inventory = inventory;
         }

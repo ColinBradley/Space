@@ -24,7 +24,7 @@ public static class FactionMeta
     {
         if (faction is null)
         {
-            return Array.Empty<string>();
+            return [];
         }
 
         var imagePathBase = $"/images/factions/{faction.Value.ToString().ToLower()}/scenes/";
@@ -36,7 +36,7 @@ public static class FactionMeta
         }
         catch
         {
-            return Array.Empty<string>();
+            return [];
         }
     }
 

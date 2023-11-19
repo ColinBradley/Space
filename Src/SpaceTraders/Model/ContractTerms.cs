@@ -39,10 +39,7 @@ namespace SpaceTraders.Model
         {
             this.Deadline = deadline;
             // to ensure "payment" is required (not null)
-            if (payment == null)
-            {
-                throw new ArgumentNullException("payment is a required property for ContractTerms and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(payment);
 
             this.Payment = payment;
             this.Deliver = deliver;

@@ -48,31 +48,19 @@ namespace SpaceTraders.Model
         {
             this.Symbol = symbol;
             // to ensure "name" is required (not null)
-            if (name == null)
-            {
-                throw new ArgumentNullException("name is a required property for Faction and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(name);
 
             this.Name = name;
             // to ensure "description" is required (not null)
-            if (description == null)
-            {
-                throw new ArgumentNullException("description is a required property for Faction and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(description);
 
             this.Description = description;
             // to ensure "headquarters" is required (not null)
-            if (headquarters == null)
-            {
-                throw new ArgumentNullException("headquarters is a required property for Faction and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(headquarters);
 
             this.Headquarters = headquarters;
             // to ensure "traits" is required (not null)
-            if (traits == null)
-            {
-                throw new ArgumentNullException("traits is a required property for Faction and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(traits);
 
             this.Traits = traits;
             this.IsRecruiting = isRecruiting;

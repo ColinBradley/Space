@@ -73,24 +73,15 @@ namespace SpaceTraders.Model
         public Survey(string? signature = default, string? symbol = default, List<SurveyDeposit>? deposits = default, DateTime expiration = default, SizeEnum size = default)
         {
             // to ensure "signature" is required (not null)
-            if (signature == null)
-            {
-                throw new ArgumentNullException("signature is a required property for Survey and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(signature);
 
             this.Signature = signature;
             // to ensure "symbol" is required (not null)
-            if (symbol == null)
-            {
-                throw new ArgumentNullException("symbol is a required property for Survey and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(symbol);
 
             this.Symbol = symbol;
             // to ensure "deposits" is required (not null)
-            if (deposits == null)
-            {
-                throw new ArgumentNullException("deposits is a required property for Survey and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(deposits);
 
             this.Deposits = deposits;
             this.Expiration = expiration;

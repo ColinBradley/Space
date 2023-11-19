@@ -47,17 +47,11 @@ namespace SpaceTraders.Model
         public ConnectedSystem(string? symbol = default, string? sectorSymbol = default, SystemType type = default, string? factionSymbol = default, int x = default, int y = default, int distance = default)
         {
             // to ensure "symbol" is required (not null)
-            if (symbol == null)
-            {
-                throw new ArgumentNullException("symbol is a required property for ConnectedSystem and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(symbol);
 
             this.Symbol = symbol;
             // to ensure "sectorSymbol" is required (not null)
-            if (sectorSymbol == null)
-            {
-                throw new ArgumentNullException("sectorSymbol is a required property for ConnectedSystem and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(sectorSymbol);
 
             this.SectorSymbol = sectorSymbol;
             this.Type = type;

@@ -46,80 +46,47 @@ namespace SpaceTraders.Model
         public Ship(string? symbol = default, ShipRegistration? registration = default, ShipNav? nav = default, ShipCrew? crew = default, ShipFrame? frame = default, ShipReactor? reactor = default, ShipEngine? engine = default, List<ShipModule>? modules = default, List<ShipMount>? mounts = default, ShipCargo? cargo = default, ShipFuel? fuel = default)
         {
             // to ensure "symbol" is required (not null)
-            if (symbol == null)
-            {
-                throw new ArgumentNullException("symbol is a required property for Ship and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(symbol);
 
             this.Symbol = symbol;
             // to ensure "registration" is required (not null)
-            if (registration == null)
-            {
-                throw new ArgumentNullException("registration is a required property for Ship and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(registration);
 
             this.Registration = registration;
             // to ensure "nav" is required (not null)
-            if (nav == null)
-            {
-                throw new ArgumentNullException("nav is a required property for Ship and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(nav);
 
             this.Nav = nav;
             // to ensure "crew" is required (not null)
-            if (crew == null)
-            {
-                throw new ArgumentNullException("crew is a required property for Ship and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(crew);
 
             this.Crew = crew;
             // to ensure "frame" is required (not null)
-            if (frame == null)
-            {
-                throw new ArgumentNullException("frame is a required property for Ship and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(frame);
 
             this.Frame = frame;
             // to ensure "reactor" is required (not null)
-            if (reactor == null)
-            {
-                throw new ArgumentNullException("reactor is a required property for Ship and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(reactor);
 
             this.Reactor = reactor;
             // to ensure "engine" is required (not null)
-            if (engine == null)
-            {
-                throw new ArgumentNullException("engine is a required property for Ship and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(engine);
 
             this.Engine = engine;
             // to ensure "modules" is required (not null)
-            if (modules == null)
-            {
-                throw new ArgumentNullException("modules is a required property for Ship and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(modules);
 
             this.Modules = modules;
             // to ensure "mounts" is required (not null)
-            if (mounts == null)
-            {
-                throw new ArgumentNullException("mounts is a required property for Ship and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(mounts);
 
             this.Mounts = mounts;
             // to ensure "cargo" is required (not null)
-            if (cargo == null)
-            {
-                throw new ArgumentNullException("cargo is a required property for Ship and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(cargo);
 
             this.Cargo = cargo;
             // to ensure "fuel" is required (not null)
-            if (fuel == null)
-            {
-                throw new ArgumentNullException("fuel is a required property for Ship and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(fuel);
 
             this.Fuel = fuel;
         }

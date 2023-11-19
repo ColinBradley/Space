@@ -214,8 +214,7 @@ namespace SpaceTraders.Client
         /// <returns>true if found</returns>
         private static bool HasEnumMemberAttrValue(object enumVal)
         {
-            if (enumVal == null)
-                throw new ArgumentNullException(nameof(enumVal));
+            ArgumentNullException.ThrowIfNull(enumVal);
             var enumType = enumVal.GetType();
             var memInfo = enumType.GetMember(enumVal.ToString() ?? throw new InvalidOperationException());
             var attr = memInfo.FirstOrDefault()?.GetCustomAttributes(false).OfType<EnumMemberAttribute>().FirstOrDefault();
@@ -230,8 +229,7 @@ namespace SpaceTraders.Client
         /// <returns>EnumMember value as string otherwise null</returns>
         private static string? GetEnumMemberAttrValue(object enumVal)
         {
-            if (enumVal == null)
-                throw new ArgumentNullException(nameof(enumVal));
+            ArgumentNullException.ThrowIfNull(enumVal);
             var enumType = enumVal.GetType();
             var memInfo = enumType.GetMember(enumVal.ToString() ?? throw new InvalidOperationException());
             var attr = memInfo.FirstOrDefault()?.GetCustomAttributes(false).OfType<EnumMemberAttribute>().FirstOrDefault();

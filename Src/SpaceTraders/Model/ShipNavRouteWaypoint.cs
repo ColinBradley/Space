@@ -45,18 +45,12 @@ namespace SpaceTraders.Model
         public ShipNavRouteWaypoint(string? symbol = default, WaypointType type = default, string? systemSymbol = default, int x = default, int y = default)
         {
             // to ensure "symbol" is required (not null)
-            if (symbol == null)
-            {
-                throw new ArgumentNullException("symbol is a required property for ShipNavRouteWaypoint and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(symbol);
 
             this.Symbol = symbol;
             this.Type = type;
             // to ensure "systemSymbol" is required (not null)
-            if (systemSymbol == null)
-            {
-                throw new ArgumentNullException("systemSymbol is a required property for ShipNavRouteWaypoint and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(systemSymbol);
 
             this.SystemSymbol = systemSymbol;
             this.X = x;

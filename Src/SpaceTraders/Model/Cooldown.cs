@@ -38,10 +38,7 @@ namespace SpaceTraders.Model
         public Cooldown(string? shipSymbol = default, int totalSeconds = default, int remainingSeconds = default, DateTime expiration = default)
         {
             // to ensure "shipSymbol" is required (not null)
-            if (shipSymbol == null)
-            {
-                throw new ArgumentNullException("shipSymbol is a required property for Cooldown and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(shipSymbol);
 
             this.ShipSymbol = shipSymbol;
             this.TotalSeconds = totalSeconds;

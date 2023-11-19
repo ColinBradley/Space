@@ -32,9 +32,9 @@ public class SpaceApplication
 
     public Observable<Waypoint?> SelectedWaypoint { get; } = new(null);
 
-    public ObservableCollection<Contract> Contracts { get; } = new(Array.Empty<Contract>(), c => c.Id);
+    public ObservableCollection<Contract> Contracts { get; } = new([], c => c.Id);
 
-    public ObservableCollection<ShipModel> Ships { get; } = new(Array.Empty<ShipModel>(), s => s.Ship.Symbol);
+    public ObservableCollection<ShipModel> Ships { get; } = new([], s => s.Ship.Symbol);
 
     public IEnumerable<SystemModel> KnownSystems => mSystemsBySymbol.Values.Where(s => s is not null).Select(s => s!);
 
@@ -58,8 +58,8 @@ public class SpaceApplication
 
         if (this.Agent.Value is null)
         {
-            this.Contracts.SetValues(Array.Empty<Contract>());
-            this.Ships.SetValues(Array.Empty<ShipModel>());
+            this.Contracts.SetValues([]);
+            this.Ships.SetValues([]);
 
             return;
         }
@@ -134,7 +134,7 @@ public class SpaceApplication
         this.Ships.SetValues(
             (await new FleetApi(this.Configuration).GetMyShipsAsync())
                 ?.Data.Select(s => new ShipModel(s)).ToArray() ??
-                Array.Empty<ShipModel>());
+                []);
 
         // Ensure that we're aware of each ship's system
         foreach (var ship in this.Ships.Values)
@@ -148,7 +148,7 @@ public class SpaceApplication
         this.Contracts.SetValues(
             (await new ContractsApi(this.Configuration).GetContractsAsync())
                 ?.Data.ToArray() ??
-                Array.Empty<Contract>());
+                []);
     }
 
     private static async Task<SpaceSystem[]> FetchSystems(Configuration configuration)

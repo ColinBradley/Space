@@ -48,34 +48,22 @@ namespace SpaceTraders.Model
         public SpaceSystem(string? symbol = default, string? sectorSymbol = default, SystemType type = default, int x = default, int y = default, List<SystemWaypoint>? waypoints = default, List<SystemFaction>? factions = default)
         {
             // to ensure "symbol" is required (not null)
-            if (symbol == null)
-            {
-                throw new ArgumentNullException("symbol is a required property for System and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(symbol);
 
             this.Symbol = symbol;
             // to ensure "sectorSymbol" is required (not null)
-            if (sectorSymbol == null)
-            {
-                throw new ArgumentNullException("sectorSymbol is a required property for System and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(sectorSymbol);
 
             this.SectorSymbol = sectorSymbol;
             this.Type = type;
             this.X = x;
             this.Y = y;
             // to ensure "waypoints" is required (not null)
-            if (waypoints == null)
-            {
-                throw new ArgumentNullException("waypoints is a required property for System and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(waypoints);
 
             this.Waypoints = waypoints;
             // to ensure "factions" is required (not null)
-            if (factions == null)
-            {
-                throw new ArgumentNullException("factions is a required property for System and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(factions);
 
             this.Factions = factions;
         }

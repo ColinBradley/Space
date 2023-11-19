@@ -35,10 +35,7 @@ namespace SpaceTraders.Model
         public InstallMount201Response(InstallMount201ResponseData? data = default)
         {
             // to ensure "data" is required (not null)
-            if (data == null)
-            {
-                throw new ArgumentNullException("data is a required property for InstallMount201Response and cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(data);
 
             this.Data = data;
         }

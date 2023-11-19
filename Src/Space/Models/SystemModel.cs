@@ -22,7 +22,7 @@ public class SystemModel
 
     public Observable<SpaceSystem> SpaceSystem { get; }
 
-    public ObservableCollection<Waypoint> Waypoints { get; } = new(Array.Empty<Waypoint>(), w => w.Symbol);
+    public ObservableCollection<Waypoint> Waypoints { get; } = new([], w => w.Symbol);
 
     public async Task Update()
     {
@@ -83,7 +83,10 @@ public class SystemModel
             WaypointType.NEBULA => "Nebula",
             WaypointType.DEBRISFIELD => "Debris Field",
             WaypointType.GRAVITYWELL => "Gravity Well",
-            _ => throw new NotImplementedException(),
+            WaypointType.ASTEROID => "Asteroid",
+            WaypointType.ENGINEEREDASTEROID => "Engineered Asteroid",
+            WaypointType.ASTEROIDBASE => "Asteroid Base",
+            WaypointType.FUELSTATION => "Fuel Station",
         };
 
     public static string GetHumanName(WaypointTrait.SymbolEnum symbol) =>
@@ -148,6 +151,15 @@ public class SystemModel
             WaypointTrait.SymbolEnum.JUNGLE => "Jungle",
             WaypointTrait.SymbolEnum.OCEAN => "Ocean",
             WaypointTrait.SymbolEnum.STRIPPED => "Stripped",
-            _ => throw new NotImplementedException(),
+            WaypointTrait.SymbolEnum.UNDERCONSTRUCTION => "Under Construction",
+            WaypointTrait.SymbolEnum.PIRATEBASE => "Pirate Base",
+            WaypointTrait.SymbolEnum.THINATMOSPHERE => "Thin Atmosphere",
+            WaypointTrait.SymbolEnum.RADIOACTIVE => "Radioactive",
+            WaypointTrait.SymbolEnum.MICROGRAVITYANOMALIES => "Microgravity Anomalies",
+            WaypointTrait.SymbolEnum.DEBRISCLUSTER => "Debris Cluster",
+            WaypointTrait.SymbolEnum.DEEPCRATERS => "Deep Craters",
+            WaypointTrait.SymbolEnum.SHALLOWCRATERS => "Shallow Craters",
+            WaypointTrait.SymbolEnum.UNSTABLECOMPOSITION => "Unstable Composition",
+            WaypointTrait.SymbolEnum.HOLLOWEDINTERIOR => "Hollowed Interior",
         };
 }
